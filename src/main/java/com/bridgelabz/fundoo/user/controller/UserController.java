@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.response.Response;
@@ -39,17 +41,17 @@ public class UserController {
 		System.out.println(response);
 		return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
 	}
-	public ResponseEntity<Response>forgotpassword(UserDto userDto){
-		Response response=userservice.forgotpassword(userDto);
-		System.out.println(response);
-		
+
+	@GetMapping("/user/forgot")
+	public ResponseEntity<Response> forgot(@RequestParam String emailid){
+		System.out.println("inside forgot");
+		Response response=userservice.forgotpassword(emailid);
 		return new ResponseEntity<>(response,HttpStatus.OK);
-		
 	}
-	@PostMapping("/user/forgot")
-	public ResponseEntity<Response> forgot(@RequestBody UserDto userDto){
-		Response response=userservice.forgotpassword(userDto);
-		System.out.println(response);
-		return new ResponseEntity<>(response,HttpStatus.FOUND);
+	@PutMapping("/user/resetPassword/{token}")
+	public ResponseEntity<Response> resetpassword(@PathVariable String token, @RequestParam String password) throws IllegalArgumentException, UnsupportedEncodingException{
+		Response response=userservice.resetpassword(password,token);
+		System.out.println("Inside reset");
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 }

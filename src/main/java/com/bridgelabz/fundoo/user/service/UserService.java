@@ -119,26 +119,26 @@ public class UserService implements IUserService {
 	private User verify(User user) {
 		user.setVerified(true);
 		user.setModifiedDate(LocalDateTime.now());
+	
 
 		return userRespository.save(user);
 	}
 
 	@Override
-	public Response forgotpassword(UserDto userDto) {
+	public Response forgotpassword(String emailid) {
 		Emailid email = new Emailid();
+
 		Response response = null;
-		Optional<User> availabilityUser = userRespository.findByEmailId(userDto.getEmailId());
-		if (availabilityUser.isPresent()) {
-			User user = modelmapper.map(userDto, User.class);
-			user.setPassword(userDto.getPassword());
-			user.setModifiedDate(LocalDateTime.now());
-			User status = userRespository.save(user);
+		Optional<User> user = userRespository.findByEmailId(emailid);
+		
+		if (user.isPresent()) {
+
 			System.out.println("Password changed");
 			email.setFrom("rohankadam572@gmail.com");
-			email.setTo(userDto.getEmailId());
+			email.setTo(emailid);
 			email.setSubject("Forgot Password");
 			try {
-				email.setBody(mailService.getlink("http://192.168.0.189:8080/user/forgotpassword/", status.getId()));
+				email.setBody(mailService.getlink("http://192.168.0.189:8080/user/resetPassword/", user.get().getId()));
 			} catch (IllegalArgumentException ex) {
 				ex.printStackTrace();
 			}
@@ -155,5 +155,36 @@ public class UserService implements IUserService {
 
 		return response;
 	}
+
+	@Override
+	public Response resetpassword(String password,String token) throws IllegalArgumentException, UnsupportedEncodingException {
+		Response response = null;
+		long id = tokengenerators.decodeToken(token);
+		System.out.println(id);
+		
+	
+		Optional<User> user = userRespository.findById((int)id);
+		
+		if(user.isPresent()) {
+			
+//			user.get().setPassword(passsword);
+//			user.get().setModifiedDate(LocalDateTime.now());
+//			userRespository.save(user.get());
+			changePassword(user, password);
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
+					Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));
+		} else {
+			System.out.println("User not present");
+			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.resetpassword"),
+					Integer.parseInt(environment.getProperty("status.failure.resetpassword.code")));
+		}
+		return response;
+	}
+public User changePassword(Optional<User> user,String Password) {
+	user.get().setModifiedDate(LocalDateTime.now());
+	user.get().setPassword(Password);
+	return userRespository.save(user.get());
+	
+}
 
 }

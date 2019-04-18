@@ -11,5 +11,6 @@ public interface IUserService {
 Response registeruser(UserDto userDto);
 Response loginuser(UserDto userDto);
 Response validateEmail(String token) throws IllegalArgumentException, UnsupportedEncodingException;
-Response forgotpassword(UserDto userDto);
+Response forgotpassword(String emailid);
+Response resetpassword(String token,String password) throws IllegalArgumentException, UnsupportedEncodingException;
 }
