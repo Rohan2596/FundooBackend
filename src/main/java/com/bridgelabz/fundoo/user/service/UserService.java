@@ -157,7 +157,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response resetpassword(String password,String token) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response resetpassword(String token,String password) throws IllegalArgumentException, UnsupportedEncodingException {
 		Response response = null;
 		long id = tokengenerators.decodeToken(token);
 		System.out.println(id);
@@ -167,9 +167,7 @@ public class UserService implements IUserService {
 		
 		if(user.isPresent()) {
 			
-//			user.get().setPassword(passsword);
-//			user.get().setModifiedDate(LocalDateTime.now());
-//			userRespository.save(user.get());
+
 			changePassword(user, password);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
 					Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));
@@ -185,6 +183,33 @@ public User changePassword(Optional<User> user,String Password) {
 	user.get().setPassword(Password);
 	return userRespository.save(user.get());
 	
+}
+
+@Override
+public Response changePassword(String emailid) {
+	Emailid email=new Emailid();
+	Response response=null;
+	Optional<User> user=userRespository.findByEmailId(emailid);
+	if(user.isPresent()) {
+		email.setFrom("rohankadam572@gmail.com");
+		email.setTo(emailid);
+		email.setSubject("Changeing Password");
+		try {
+			email.setBody(mailService.getlink("http://192.168.0.189:8080/user/resetPassword/", user.get().getId()));
+			
+		}catch(IllegalArgumentException ex) {
+			ex.printStackTrace();
+		}
+		mailService.send(email);
+		response = ResponseStatus.statusinfo(environment.getProperty("status.success.fpassword"),
+				Integer.parseInt(environment.getProperty("status.success.fpassword.code")));
+}else {
+	System.out.println("User is not present");
+	response = ResponseStatus.statusinfo(environment.getProperty("status.failure.fpassword"),
+			Integer.parseInt(environment.getProperty("status.failure.fpassword.code")));
+}
+	
+	return response;
 }
 
 }

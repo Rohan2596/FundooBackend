@@ -13,4 +13,5 @@ Response loginuser(UserDto userDto);
 Response validateEmail(String token) throws IllegalArgumentException, UnsupportedEncodingException;
 Response forgotpassword(String emailid);
 Response resetpassword(String token,String password) throws IllegalArgumentException, UnsupportedEncodingException;
+Response changePassword(String emailid);
 }

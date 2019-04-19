@@ -50,8 +50,13 @@ public class UserController {
 	}
 	@PutMapping("/user/resetPassword/{token}")
 	public ResponseEntity<Response> resetpassword(@PathVariable String token, @RequestParam String password) throws IllegalArgumentException, UnsupportedEncodingException{
-		Response response=userservice.resetpassword(password,token);
+		Response response=userservice.resetpassword(token,password);
 		System.out.println("Inside reset");
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	@GetMapping("/user/changePassword")
+	public ResponseEntity<Response> changepassword(@RequestParam String emailid){
+		Response response=userservice.changePassword(emailid);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 }
