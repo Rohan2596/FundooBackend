@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.hibernate.validator.cfg.defs.EmailDef;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -48,7 +47,7 @@ public class UserService implements IUserService {
 
 			User user = modelmapper.map(userDto, User.class);
 			user.setName(userDto.getName());
-			user.setEmailId(userDto.getEmailId());
+			user.setEmailId(userDto.getEmailId()); 
 			user.setPassword(userDto.getPassword());
 			user.setPhNumber(userDto.getPhNumber());
 			user.setRegisteredDate(LocalDateTime.now());

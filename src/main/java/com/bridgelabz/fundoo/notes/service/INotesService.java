@@ -5,8 +5,8 @@ import com.bridgelabz.fundoo.response.Response;
 
 public interface INotesService {
 Response create(NotesDto notesDto);
-Response read(NotesDto notesDto);
-Response update(NotesDto notesDto);
-Response delete(NotesDto notesDto);
+Response read(String  title);
+Response update(String title,String description);
+Response delete(String title);
 
 }
