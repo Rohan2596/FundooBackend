@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo.response.Response;
-
+import com.bridgelabz.fundoo.response.ResponseToken;
 import com.bridgelabz.fundoo.user.dto.UserDto;
 import com.bridgelabz.fundoo.user.model.Emailid;
 import com.bridgelabz.fundoo.user.model.User;
@@ -76,19 +76,21 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response loginuser(UserDto userDto) {
+	public ResponseToken loginuser(UserDto userDto) {
 
-		Response response = null;
+		ResponseToken response = null;
 		Optional<User> availability = userRespository.findByEmailId(userDto.getEmailId());
 		System.out.println(userDto.getEmailId());
 		if (availability.isPresent()) {
-			response = ResponseStatus.statusinfo(environment.getProperty("status.login.success"),
-					Integer.parseInt(environment.getProperty("status.success.code")));
+			String tokengenerate=tokengenerators.generateToken(availability.get().getId());
+			System.out.println(tokengenerate);
+			response = ResponseStatus.tokenStatusInfo(environment.getProperty("status.login.success"),
+					Integer.parseInt(environment.getProperty("status.success.code")),tokengenerate);
 			return response;
 
 		}
-		response = ResponseStatus.statusinfo(environment.getProperty("status.login.nosuccess"),
-				Integer.parseInt(environment.getProperty("status.success.code")));
+		response = ResponseStatus.tokenStatusInfo(environment.getProperty("status.login.nosuccess"),
+				Integer.parseInt(environment.getProperty("status.success.code")),null);
 		return response;
 
 	}
@@ -101,7 +103,7 @@ public class UserService implements IUserService {
 		System.out.println(id);
 
 //	
-		Optional<User> user = userRespository.findById((int) id).map(this::verify);
+		Optional<User> user = userRespository.findById((long) id).map(this::verify);
 
 		if (user.isPresent()) {
 
@@ -162,7 +164,7 @@ public class UserService implements IUserService {
 		System.out.println(id);
 		
 	
-		Optional<User> user = userRespository.findById((int)id);
+		Optional<User> user = userRespository.findById((long)id);
 		
 		if(user.isPresent()) {
 			

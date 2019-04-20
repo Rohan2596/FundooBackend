@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.response.Response;
+import com.bridgelabz.fundoo.response.ResponseToken;
 import com.bridgelabz.fundoo.user.dto.UserDto;
 import com.bridgelabz.fundoo.user.service.UserService;
 
@@ -29,10 +30,10 @@ public class UserController {
 	}
 
 	@GetMapping("/user/response")
-	public ResponseEntity<Response> loginuser(@RequestBody UserDto userDto){
-		Response response=userservice.loginuser(userDto);
+	public ResponseEntity<ResponseToken> loginuser(@RequestBody UserDto userDto){
+		ResponseToken response=userservice.loginuser(userDto);
 		System.out.println(response);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>( response,HttpStatus.OK);
 		
 	}
 	@GetMapping("/user/emailvalidation/{token}")
@@ -42,6 +43,7 @@ public class UserController {
 		return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
 	}
 
+	
 	@GetMapping("/user/forgot")
 	public ResponseEntity<Response> forgot(@RequestParam String emailid){
 		System.out.println("inside forgot");
@@ -59,4 +61,6 @@ public class UserController {
 		Response response=userservice.changePassword(emailid);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
-}
+	
+	}
+

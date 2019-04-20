@@ -2,15 +2,23 @@
 package com.bridgelabz.fundoo.user.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 
 import org.springframework.stereotype.Component;
+
+import com.bridgelabz.fundoo.notes.model.Notes;
 
 @Component
 @Entity
@@ -18,7 +26,7 @@ import org.springframework.stereotype.Component;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	private long id;
 
 	@NotEmpty(message = "Please provide valid Name")
 	@NotNull(message = "Please provide Valid Name")
@@ -38,12 +46,21 @@ public class User {
 	private boolean isVerified = false;
 	private LocalDateTime registeredDate;
 	private LocalDateTime modifiedDate;
+   @OneToMany(cascade=CascadeType.ALL)
+	private List<Notes> notesUser;
+	public List<Notes> getNotesUser() {
+		return notesUser;
+	}
 
-	public int getId() {
+	public void setNotesUser(List<Notes> notesUser) {
+		this.notesUser = notesUser;
+	}
+
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -112,7 +129,9 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber + ", password="
 				+ password + ", isVerified=" + isVerified + ", registeredDate=" + registeredDate + ", modifiedDate="
-				+ modifiedDate + "]";
+				+ modifiedDate + ", notesUser=" + notesUser + "]";
 	}
+
+	
 
 }
