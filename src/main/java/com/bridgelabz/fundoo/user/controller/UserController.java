@@ -2,6 +2,8 @@
 
 import java.io.UnsupportedEncodingException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,9 @@ public class UserController {
 	@Autowired
 	UserService userservice;
 	@PostMapping("/user/response")
-	public ResponseEntity<Response> register (@RequestBody UserDto userdto) {
-		Response response=userservice.registeruser(userdto);
+	public ResponseEntity<Response> register (@RequestBody UserDto userdto, HttpServletRequest httpServletRequest) {
+		StringBuffer requestUrl = httpServletRequest.getRequestURL();
+		Response response=userservice.registeruser(userdto, requestUrl);
 		System.out.println(response);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}

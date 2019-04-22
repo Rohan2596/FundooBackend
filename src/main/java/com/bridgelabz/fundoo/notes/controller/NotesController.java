@@ -21,6 +21,7 @@ import com.bridgelabz.fundoo.notes.dto.NotesDto;
 import com.bridgelabz.fundoo.notes.service.NotesService;
 import com.bridgelabz.fundoo.response.Response;
 
+
 @RestController
 public class NotesController {
 @Autowired
@@ -28,7 +29,7 @@ NotesService  notesService;
 
 @PostMapping("/user/createNotes")
 	public ResponseEntity<Response> createNote(@RequestBody NotesDto notesDto,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
-		Response response=notesService.create(notesDto,token);
+		Response response=notesService.create(notesDto, token);
 		System.out.println("response");
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
@@ -53,21 +54,21 @@ public ResponseEntity<Response> deleteNote(@RequestBody String token, @RequestPa
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
 @PostMapping("/user/trash")
-public ResponseEntity<Response>trash(@RequestBody String token,@RequestParam int id) throws IllegalArgumentException, UnsupportedEncodingException{
+public ResponseEntity<Response>trash(@RequestHeader String token,@RequestParam int id) throws IllegalArgumentException, UnsupportedEncodingException{
 	System.out.println("Inside trash note");
 	Response response=notesService.trash(token,id);
 	System.out.println(response);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
 @PostMapping("/user/pin")
-public ResponseEntity<Response>pin(@RequestBody String token, @RequestParam int id) throws IllegalArgumentException, UnsupportedEncodingException{
+public ResponseEntity<Response>pin(@RequestHeader String token, @RequestParam int id) throws IllegalArgumentException, UnsupportedEncodingException{
 	System.out.println("Inside pin ");
 	Response response=notesService.pin(token,id);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
 
 @PostMapping("/user/archieve")
-public ResponseEntity<Response>archieve(@RequestBody String token,@ RequestParam int id) throws IllegalArgumentException, UnsupportedEncodingException{
+public ResponseEntity<Response>archieve(@RequestHeader String token,@ RequestParam int id) throws IllegalArgumentException, UnsupportedEncodingException{
 	System.out.println("Inside pin ");
 	Response response=notesService.archieve(token,id);
 	return new ResponseEntity<>(response,HttpStatus.OK);

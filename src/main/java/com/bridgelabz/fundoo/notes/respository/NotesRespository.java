@@ -12,5 +12,5 @@ public interface  NotesRespository  extends JpaRepository<Notes,Long>{
 	public Optional<Notes> findBytitle(String title);
 	public Optional<Notes> deleteBytitle(String title);
 
-	public Notes findByIdAndUserId(long id , long userId);
+	public Notes findByNoteidAndUserId(long noteid , long userId);
 }

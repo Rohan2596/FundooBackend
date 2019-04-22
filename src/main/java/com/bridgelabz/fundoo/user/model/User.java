@@ -26,7 +26,7 @@ import com.bridgelabz.fundoo.notes.model.Notes;
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private long userId;
 
 	@NotEmpty(message = "Please provide valid Name")
 	@NotNull(message = "Please provide Valid Name")
@@ -47,21 +47,21 @@ public class User {
 	private LocalDateTime registeredDate;
 	private LocalDateTime modifiedDate;
    @OneToMany(cascade=CascadeType.ALL)
-	private List<Notes> notesUser;
-	public List<Notes> getNotesUser() {
-		return notesUser;
+	private List<Notes> notes;
+	public List<Notes> getNotes() {
+		return notes;
 	}
 
-	public void setNotesUser(List<Notes> notesUser) {
-		this.notesUser = notesUser;
+	public void setNotes(List<Notes> notes) {
+		this.notes = notes;
 	}
 
 	public long getId() {
-		return id;
+		return userId;
 	}
 
 	public void setId(long id) {
-		this.id = id;
+		this.userId = id;
 	}
 
 	public String getName() {
@@ -127,9 +127,9 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber + ", password="
+		return "User [id=" + userId + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber + ", password="
 				+ password + ", isVerified=" + isVerified + ", registeredDate=" + registeredDate + ", modifiedDate="
-				+ modifiedDate + ", notesUser=" + notesUser + "]";
+				+ modifiedDate + ", notes=" + notes + "]";
 	}
 
 	

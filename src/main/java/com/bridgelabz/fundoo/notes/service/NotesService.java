@@ -41,6 +41,8 @@ UserRespository userRespository;
 		Optional<Notes> isNotesPresent = notesRespository.findBytitle(notesDto.getTitle());
 		if (isNotesPresent.isPresent()) {
 			System.out.println("Notes is already present create an another one");
+			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.notes.created"),
+					Integer.parseInt(environment.getProperty("status.failure.notes.code")));
 		} else {
 
 			Notes notes = modelMapper.map(notesDto, Notes.class);
@@ -52,7 +54,7 @@ UserRespository userRespository;
 			notes.setArchieve(false);
 			notes.setPin(false);
 			notes.setTrash(false);
-			user.get().getNotesUser().add(notes);
+			user.get().getNotes().add(notes);
 			
 			notesRespository.save(notes);
 			userRespository.save(user.get());
@@ -68,8 +70,8 @@ UserRespository userRespository;
 		Optional<Notes> availnotes = notesRespository.findBytitle(title);
 		if (availnotes.isPresent()) {
 			System.out.println("notes is present");
-			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
-					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.notes.created"),
+					Integer.parseInt(environment.getProperty("status.failure.notes.code")));
 		} else {
 			System.out.println("Notes is not present");
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes"),
@@ -87,7 +89,7 @@ UserRespository userRespository;
 		}
 		long Userid = tokengenerators.decodeToken(token);
 
-		Notes notes = notesRespository.findByIdAndUserId(id, Userid);
+		Notes notes = notesRespository.findByNoteidAndUserId(id, Userid);
 		notes.setTitle(notesDto.getDescription());
 		notes.setDescription(notesDto.getDescription());
 		notes.setModifiedDate(LocalDateTime.now());
@@ -101,7 +103,7 @@ UserRespository userRespository;
 	public Response delete(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
-		Notes notes = notesRespository.findByIdAndUserId(id, userid);
+		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
 		if (notes.isTrash() == false) {
 			System.out.println("delete notes and putting into trash");
 			notes.setTrash(true);
@@ -122,9 +124,9 @@ UserRespository userRespository;
 	public Response trash(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
-		Notes notes = notesRespository.findByIdAndUserId(id, userid);
+		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
 
-		if (notes.isTrash()) {
+		if (notes.isTrash()==false) {
 			System.out.println("notes trash");
 			notes.setTrash(true);
 			notes.setModifiedDate(LocalDateTime.now());
@@ -143,9 +145,9 @@ UserRespository userRespository;
 	public Response pin(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
-		Notes notes = notesRespository.findByIdAndUserId(id, userid);
+		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
 
-		if (notes.isPin()) {
+		if (notes.isPin()==false) {
 			System.out.println("notes trash");
 			notes.setPin(true);
 			notes.setModifiedDate(LocalDateTime.now());
@@ -164,9 +166,9 @@ UserRespository userRespository;
 	public Response archieve(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
-		Notes notes = notesRespository.findByIdAndUserId(id, userid);
+		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
 
-		if (notes.isPin()) {
+		if (notes.isPin()==false) {
 			System.out.println("notes trash");
 			notes.setPin(true);
 			notes.setModifiedDate(LocalDateTime.now());

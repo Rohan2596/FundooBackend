@@ -18,7 +18,8 @@ import org.springframework.stereotype.Component;
 public class Notes {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private long noteid;
+	
 	private long userId;
 
 	@NotNull(message = "Please provide valid Title")
@@ -34,11 +35,11 @@ public class Notes {
 	private boolean isArchieve;
 
 	public long getId() {
-		return id;
+		return noteid;
 	}
 
 	public void setId(long id) {
-		this.id = id;
+		this.noteid = id;
 	}
 
 	public long getUserId() {
@@ -107,7 +108,7 @@ public class Notes {
 
 	@Override
 	public String toString() {
-		return "Notes [id=" + id + ", Userid=" + userId + ", title=" + title + ", description=" + description
+		return "Notes [id=" + noteid + ", Userid=" + userId + ", title=" + title + ", description=" + description
 				+ ", modifiedDate=" + modifiedDate + ", createdDate=" + createdDate + ", isPin=" + isPin + ", isTrash="
 				+ isTrash + ", isArchieve=" + isArchieve + "]";
 	}
