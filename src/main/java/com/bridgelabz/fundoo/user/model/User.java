@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.stereotype.Component;
 
+import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.notes.model.Notes;
 
 @Component
@@ -48,6 +49,17 @@ public class User {
 	private LocalDateTime modifiedDate;
    @OneToMany(cascade=CascadeType.ALL)
 	private List<Notes> notes;
+ @OneToMany(cascade=CascadeType.ALL)
+   private List<Labels> labels;
+   
+	public List<Labels> getLabels() {
+	return labels;
+}
+
+public void setLabels(List<Labels> labels) {
+	this.labels = labels;
+}
+
 	public List<Notes> getNotes() {
 		return notes;
 	}
@@ -127,10 +139,11 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + userId + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber + ", password="
-				+ password + ", isVerified=" + isVerified + ", registeredDate=" + registeredDate + ", modifiedDate="
-				+ modifiedDate + ", notes=" + notes + "]";
+		return "User [userId=" + userId + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber
+				+ ", password=" + password + ", isVerified=" + isVerified + ", registeredDate=" + registeredDate
+				+ ", modifiedDate=" + modifiedDate + ", notes=" + notes + ", labels=" + labels + "]";
 	}
+
 
 	
 

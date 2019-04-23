@@ -83,13 +83,13 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ResponseToken loginuser(UserDto userDto) {
+	public ResponseToken loginuser(String emailid,String password) {
 
 		ResponseToken response = null;
-		Optional<User> availability = userRespository.findByEmailId(userDto.getEmailId());
-		System.out.println(userDto.getEmailId());
+		Optional<User> availability = userRespository.findByEmailId(emailid);
+		System.out.println(emailid);
 		if (availability.isPresent()) {
-			boolean status=passwordEncoder.matches(userDto.getPassword(), availability.get().getPassword());
+			boolean status=passwordEncoder.matches(password, availability.get().getPassword());
 			if(status==true) {
 			String tokengenerate = tokengenerators.generateToken(availability.get().getId());
 			System.out.println(tokengenerate);

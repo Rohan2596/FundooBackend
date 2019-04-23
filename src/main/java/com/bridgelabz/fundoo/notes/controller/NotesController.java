@@ -3,6 +3,7 @@ package com.bridgelabz.fundoo.notes.controller;
 
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,11 +35,12 @@ NotesService  notesService;
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 @GetMapping("/user/getnotes")
-public ResponseEntity<Response> readsingleNote(@RequestParam String title){
-	Response response=notesService.read(title);
-	System.out.println(response);
-	return new ResponseEntity<>(response,HttpStatus.OK);
+public List<NotesDto> readsingleNote(@RequestParam String token) throws IllegalArgumentException, UnsupportedEncodingException{
+	List<NotesDto> listnotes=notesService.read(token);
+	
+	return listnotes;
 } 
+
 @PutMapping("/user/updatenotes")
 public ResponseEntity<Response> updateNote(@RequestBody NotesDto notesDto,@RequestBody String token,@RequestParam long id) throws IllegalArgumentException, UnsupportedEncodingException{
 	System.out.println("Inside in updateNote");

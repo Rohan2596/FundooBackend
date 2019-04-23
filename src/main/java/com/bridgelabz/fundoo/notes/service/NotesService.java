@@ -2,6 +2,8 @@ package com.bridgelabz.fundoo.notes.service;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -65,19 +67,18 @@ UserRespository userRespository;
 	}
 
 	@Override
-	public Response read(String title) {
-		Response response = null;
-		Optional<Notes> availnotes = notesRespository.findBytitle(title);
-		if (availnotes.isPresent()) {
-			System.out.println("notes is present");
-			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.notes.created"),
-					Integer.parseInt(environment.getProperty("status.failure.notes.code")));
-		} else {
-			System.out.println("Notes is not present");
-			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes"),
-					Integer.parseInt(environment.getProperty("status.success.code")));
+	public List<NotesDto> read(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+	
+		long userid=tokengenerators.decodeToken(token);
+		List<Notes> notes = (List<Notes>)notesRespository.findByUserId(userid);
+		List<NotesDto> listnotes=new ArrayList<>();
+		for(Notes usernotes:notes) {
+			NotesDto notesDto=modelMapper.map(usernotes, NotesDto.class);
+			System.out.println("notes all fbsvsvbsvn sub ");
+			listnotes.add(notesDto);
+			System.out.println(listnotes);
 		}
-		return response;
+		return listnotes;
 	}
 
 	@Override

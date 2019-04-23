@@ -33,8 +33,8 @@ public class UserController {
 	}
 
 	@GetMapping("/user/response")
-	public ResponseEntity<ResponseToken> loginuser(@RequestBody UserDto userDto){
-		ResponseToken response=userservice.loginuser(userDto);
+	public ResponseEntity<ResponseToken> loginuser(@RequestParam String emailid,String password){
+		ResponseToken response=userservice.loginuser(emailid,password);
 		System.out.println(response);
 		return new ResponseEntity<>( response,HttpStatus.OK);
 		

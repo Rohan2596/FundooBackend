@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoo.notes.respository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,5 @@ public interface  NotesRespository  extends JpaRepository<Notes,Long>{
 	public Optional<Notes> deleteBytitle(String title);
 
 	public Notes findByNoteidAndUserId(long noteid , long userId);
-}
+	public List<Notes> findByUserId(long userid);
+	}

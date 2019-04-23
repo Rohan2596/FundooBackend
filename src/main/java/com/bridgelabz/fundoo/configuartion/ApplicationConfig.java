@@ -15,7 +15,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
-@EnableSwagger2
+//@EnableSwagger2
 public class ApplicationConfig {
 	@Bean
 	ModelMapper getModelMapper() {
@@ -28,21 +28,21 @@ public class ApplicationConfig {
 	public Response getResponse() {
 		return new Response();
 	}
-
+//
+//	@Bean
+//
+//	public Docket productApi() {
+//
+//		return new Docket(DocumentationType.SWAGGER_2)
+//
+//				.select().apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoo"))
+//
+////            .paths(regex("/product.*"))
+//
+//				.build();
+//
+//	}
 	@Bean
-
-	public Docket productApi() {
-
-		return new Docket(DocumentationType.SWAGGER_2)
-
-				.select().apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoo"))
-
-//            .paths(regex("/product.*"))
-
-				.build();
-
-	}
-	
 	public PasswordEncoder getpasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}

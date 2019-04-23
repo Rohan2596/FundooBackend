@@ -10,7 +10,7 @@ import com.bridgelabz.fundoo.user.dto.UserDto;
 @Service
 public interface IUserService {
 Response registeruser(UserDto userDto, StringBuffer requestUrl);
-ResponseToken loginuser(UserDto userDto);
+ResponseToken loginuser(String emailid,String password);
 Response validateEmail(String token) throws IllegalArgumentException, UnsupportedEncodingException;
 Response forgotpassword(String emailid);
 Response resetpassword(String token,String password) throws IllegalArgumentException, UnsupportedEncodingException;
