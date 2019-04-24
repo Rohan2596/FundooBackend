@@ -11,4 +11,6 @@ Response createlabel(LabelsDto labelsDts,String token) throws IllegalArgumentExc
 Response updatelabel(LabelsDto labelsDto,String token,long id) throws IllegalArgumentException, UnsupportedEncodingException;
 Response readlabel(LabelsDto labelsdDto);
 Response deletelabel(LabelsDto labelsDto,String token,long id) throws IllegalArgumentException, UnsupportedEncodingException;
+Response addLabelNote(long labelid,String token,long noteid);
+Response removeLabelNote(long labelid,String token,long noteid);
 }

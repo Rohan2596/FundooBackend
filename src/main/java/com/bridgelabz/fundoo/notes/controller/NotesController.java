@@ -75,6 +75,16 @@ public ResponseEntity<Response>archieve(@RequestHeader String token,@ RequestPar
 	Response response=notesService.archieve(token,id);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
-
-
+@GetMapping("/user/addNotetolabel")
+public ResponseEntity<Response> addNotetolabel(long labelid, String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException{
+	System.out.println("inside addnotelabel");
+	Response response=notesService.addNotetolabel(labelid, token, noteid);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+}
+@GetMapping("/user/removeNotetolabel")
+public ResponseEntity<Response> removeNotetolabel(long labelid, String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException{
+	System.out.println("inside addnotelabel");
+	Response response=notesService.removeNotetolabel(labelid, token, noteid);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+}
 }

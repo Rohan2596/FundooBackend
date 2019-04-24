@@ -1,16 +1,21 @@
 package com.bridgelabz.fundoo.notes.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.stereotype.Component;
+
+import com.bridgelabz.fundoo.labels.model.Labels;
 
 @Component
 @Entity
@@ -21,7 +26,7 @@ public class Notes {
 	private long noteid;
 	
 	private long userId;
-
+    private long labelId; 
 	@NotNull(message = "Please provide valid Title")
 	@NotEmpty(message = "Please provide valid Title")
 	private String title;
@@ -33,6 +38,18 @@ public class Notes {
 	private boolean isPin;
 	private boolean isTrash;
 	private boolean isArchieve;
+@ManyToMany(cascade=CascadeType.ALL)
+private List<Labels> NLabels;
+
+	
+	
+	public long getLabelId() {
+	return labelId;
+}
+
+public void setLabelId(long labelId) {
+	this.labelId = labelId;
+}
 
 	public long getId() {
 		return noteid;
@@ -106,11 +123,23 @@ public class Notes {
 		this.isArchieve = isArchieve;
 	}
 
+	public List<Labels> getNLabels() {
+		return NLabels;
+	}
+
+	public void setNLabels(List<Labels> nLabels) {
+		NLabels = nLabels;
+	}
+
 	@Override
 	public String toString() {
-		return "Notes [id=" + noteid + ", Userid=" + userId + ", title=" + title + ", description=" + description
-				+ ", modifiedDate=" + modifiedDate + ", createdDate=" + createdDate + ", isPin=" + isPin + ", isTrash="
-				+ isTrash + ", isArchieve=" + isArchieve + "]";
+		return "Notes [noteid=" + noteid + ", userId=" + userId + ", labelId=" + labelId + ", title=" + title
+				+ ", description=" + description + ", modifiedDate=" + modifiedDate + ", createdDate=" + createdDate
+				+ ", isPin=" + isPin + ", isTrash=" + isTrash + ", isArchieve=" + isArchieve + ", NLabels=" + NLabels
+				+ "]";
 	}
+
+
+
 
 }

@@ -14,5 +14,7 @@ Response delete(String token,int id) throws IllegalArgumentException, Unsupporte
 Response trash(String token,int id) throws IllegalArgumentException, UnsupportedEncodingException;
 Response pin(String token,int id) throws IllegalArgumentException, UnsupportedEncodingException;
 Response archieve(String token,int id) throws IllegalArgumentException, UnsupportedEncodingException;
+Response addNotetolabel(long labelid,String token,long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
+Response removeNotetolabel(long labelid,String token,long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 
 }

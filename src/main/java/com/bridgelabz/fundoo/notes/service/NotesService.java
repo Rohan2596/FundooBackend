@@ -12,6 +12,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.fundoo.labels.model.Labels;
+import com.bridgelabz.fundoo.labels.respository.LabelRespository;
 import com.bridgelabz.fundoo.notes.dto.NotesDto;
 import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.notes.respository.NotesRespository;
@@ -35,6 +37,9 @@ public class NotesService implements INotesService {
 	TokenGenerators tokengenerators;
 @Autowired
 UserRespository userRespository;
+
+@Autowired
+LabelRespository labelRespository;
 	@Override
 	public Response create(NotesDto notesDto, String token)
 			throws IllegalArgumentException, UnsupportedEncodingException {
@@ -49,6 +54,7 @@ UserRespository userRespository;
 
 			Notes notes = modelMapper.map(notesDto, Notes.class);
 			Optional<User> user=userRespository.findById(token1);
+		
 			notes.setUserid(token1);
 			notes.setTitle(notesDto.getTitle());
 			notes.setDescription(notesDto.getDescription());
@@ -184,4 +190,50 @@ UserRespository userRespository;
 		return response;
 	}
 
+	@Override
+	public Response addNotetolabel(long labelid, String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException {
+	Response response=null;
+		long userid=tokengenerators.decodeToken(token);
+	Optional<User> user=userRespository.findById(userid);
+	Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
+	Labels labels= labelRespository.findByLabelIdAndUserId(labelid, userid);
+	if(user.isPresent())
+	{
+		notes.setModifiedDate(LocalDateTime.now());
+		notes.setLabelId(labelid);
+		labels.getLNotes().add(notes);
+		labelRespository.save(labels);
+		notesRespository.save(notes);
+		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+				Integer.parseInt(environment.getProperty("status.success.notes.code")));
+
+	}
+	response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+			Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		return  response;
+	}
+
+	@Override
+	public Response removeNotetolabel(long labelid, String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException {
+	Response response=null;
+		
+	long userid=tokengenerators.decodeToken(token);
+	Optional<User> user=userRespository.findById(userid);
+	Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
+	Labels labels= labelRespository.findByLabelIdAndUserId(labelid, userid);
+	if(user.isPresent())
+	{
+		notes.setModifiedDate(LocalDateTime.now());
+		notes.setLabelId(labelid);
+		labels.getLNotes().remove(notes);
+		labelRespository.save(labels);
+		notesRespository.save(notes);
+
+		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+				Integer.parseInt(environment.getProperty("status.success.notes.code")));
+	}
+	response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+			Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		return response;
+	}
 }

@@ -57,4 +57,18 @@ public ResponseEntity<Response> readlabels(LabelsDto labelsDto){
 		System.out.println(response);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
+
+@GetMapping("/labels/addnote")
+public ResponseEntity<Response> addLabeltoNote(long labelid, String token, long noteid){
+	Response response=labelService.addLabelNote(labelid, token, noteid) ;
+	System.out.println(response);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+}
+
+@GetMapping("/labels/removenote")
+public ResponseEntity<Response> removeLabeltoNote(long labelid, String token, long noteid){
+	Response response=labelService.removeLabelNote(labelid, token, noteid) ;
+	System.out.println(response);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+}
 }

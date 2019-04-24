@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo.labels.dto.LabelsDto;
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.labels.respository.LabelRespository;
+import com.bridgelabz.fundoo.notes.model.Notes;
+import com.bridgelabz.fundoo.notes.respository.NotesRespository;
 import com.bridgelabz.fundoo.response.Response;
 import com.bridgelabz.fundoo.user.model.User;
 import com.bridgelabz.fundoo.user.respository.UserRespository;
@@ -32,6 +34,8 @@ public class LabelService implements ILabelsService {
 	TokenGenerators tokenGenerators;
 	@Autowired
 	UserRespository userRespository;
+	@Autowired
+	NotesRespository notesRespository;
 
 	@Override
 	public Response createlabel(LabelsDto labelsDto, String token)
@@ -51,7 +55,7 @@ public class LabelService implements ILabelsService {
 			user.get().getLabels().add(labels);
 			labelRespository.save(labels);
 			userRespository.save(user.get());
-			
+
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
 					Integer.parseInt(environment.getProperty("status.success.labels.code")));
 		}
@@ -112,4 +116,76 @@ public class LabelService implements ILabelsService {
 		return response;
 	}
 
+	@Override
+	public Response addLabelNote(long labelid, String token, long noteid) {
+		Response response=null;
+		
+		long id;
+		try {
+			id = tokenGenerators.decodeToken(token);
+			Optional<User> user = userRespository.findById(id);
+			Labels labels = labelRespository.findByLabelIdAndUserId(labelid, id);
+			Notes notes = notesRespository.findByNoteidAndUserId(noteid, id);
+			if (user.isPresent()) {
+				labels.setModifiedDateTime(LocalDateTime.now());
+				labels.setNoteid(noteid);
+				notes.getNLabels().add(labels);
+				labelRespository.save(labels);
+				notesRespository.save(notes);
+				response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
+						Integer.parseInt(environment.getProperty("status.failure.labels.created")));
+			
+			}
+		} catch (IllegalArgumentException e) {
+
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+
+			e.printStackTrace();
+		}
+		response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
+				Integer.parseInt(environment.getProperty("status.failure.labels.code")));
+
+		return response;
+
+	}
+
+	@Override
+	public Response removeLabelNote(long labelid, String token, long noteid) {
+		Response response=null;
+		
+		long id;
+		try {
+			id = tokenGenerators.decodeToken(token);
+			Optional<User> user = userRespository.findById(id);
+			Labels labels = labelRespository.findByLabelIdAndUserId(labelid, id);
+			Notes notes = notesRespository.findByNoteidAndUserId(noteid, id);
+			if (user.isPresent()) {
+				labels.setModifiedDateTime(LocalDateTime.now());
+				labels.setNoteid(noteid);
+				notes.getNLabels().remove(labels);
+				labelRespository.save(labels);
+				notesRespository.save(notes);
+				response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
+						Integer.parseInt(environment.getProperty("status.failure.labels.created")));
+			
+			}
+		} catch (IllegalArgumentException e) {
+
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+
+			e.printStackTrace();
+		}
+		response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
+				Integer.parseInt(environment.getProperty("status.failure.labels.code")));
+
+		return response;
+
+	}
+
+
+
 }
+
+
