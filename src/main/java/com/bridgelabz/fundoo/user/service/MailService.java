@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoo.user.service;
+ package com.bridgelabz.fundoo.user.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

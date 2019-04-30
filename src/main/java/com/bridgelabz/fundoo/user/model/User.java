@@ -47,6 +47,9 @@ public class User {
 	private boolean isVerified = false;
 	private LocalDateTime registeredDate;
 	private LocalDateTime modifiedDate;
+	
+	
+	
    @OneToMany(cascade=CascadeType.ALL)
 	private List<Notes> notes;
  @OneToMany(cascade=CascadeType.ALL)

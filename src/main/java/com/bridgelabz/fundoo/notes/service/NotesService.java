@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.labels.respository.LabelRespository;
 import com.bridgelabz.fundoo.notes.dto.NotesDto;
@@ -42,7 +43,7 @@ UserRespository userRespository;
 LabelRespository labelRespository;
 	@Override
 	public Response create(NotesDto notesDto, String token)
-			throws IllegalArgumentException, UnsupportedEncodingException {
+			throws UserException, UnsupportedEncodingException {
 		long token1 = tokengenerators.decodeToken(token);
 		Response response = null;
 		Optional<Notes> isNotesPresent = notesRespository.findBytitle(notesDto.getTitle());
@@ -73,7 +74,7 @@ LabelRespository labelRespository;
 	}
 
 	@Override
-	public List<NotesDto> read(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+	public List<NotesDto> read(String token) throws UserException, UnsupportedEncodingException {
 	
 		long userid=tokengenerators.decodeToken(token);
 		List<Notes> notes = (List<Notes>)notesRespository.findByUserId(userid);
@@ -89,7 +90,7 @@ LabelRespository labelRespository;
 
 	@Override
 	public Response update(NotesDto notesDto, String token, long id)
-			throws IllegalArgumentException, UnsupportedEncodingException {
+			throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		if (notesDto.getTitle().isEmpty() && notesDto.getDescription().isEmpty()) {
 			System.out.println("Notes is empty");
@@ -107,7 +108,7 @@ LabelRespository labelRespository;
 	}
 
 	@Override
-	public Response delete(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response delete(String token, int id) throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
@@ -128,7 +129,7 @@ LabelRespository labelRespository;
 	}
 
 	@Override
-	public Response trash(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response trash(String token, int id) throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
@@ -149,7 +150,7 @@ LabelRespository labelRespository;
 	}
 
 	@Override
-	public Response pin(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response pin(String token, int id) throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
@@ -170,7 +171,7 @@ LabelRespository labelRespository;
 	}
 
 	@Override
-	public Response archieve(String token, int id) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response archieve(String token, int id) throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
@@ -191,7 +192,7 @@ LabelRespository labelRespository;
 	}
 
 	@Override
-	public Response addNotetolabel(long labelid, String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response addNotetolabel(long labelid, String token, long noteid) throws UserException, UnsupportedEncodingException {
 	Response response=null;
 		long userid=tokengenerators.decodeToken(token);
 	Optional<User> user=userRespository.findById(userid);
@@ -214,7 +215,7 @@ LabelRespository labelRespository;
 	}
 
 	@Override
-	public Response removeNotetolabel(long labelid, String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response removeNotetolabel(long labelid, String token, long noteid) throws UserException, UnsupportedEncodingException {
 	Response response=null;
 		
 	long userid=tokengenerators.decodeToken(token);

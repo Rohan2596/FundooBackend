@@ -5,23 +5,28 @@ import java.io.UnsupportedEncodingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.dto.LabelsDto;
 import com.bridgelabz.fundoo.labels.service.LabelService;
 import com.bridgelabz.fundoo.response.Response;
 
 @RestController
+@CrossOrigin(allowedHeaders="*",origins="*")
+@RequestMapping("/user")
 public class LabelController {
 @Autowired
 LabelService labelService;
 	@PostMapping("/labels/create")
-public ResponseEntity<Response> createlabels(@RequestBody LabelsDto labelsDto,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
+public ResponseEntity<Response> createlabels(@RequestBody LabelsDto labelsDto,@RequestHeader String token) throws UserException, UnsupportedEncodingException{
 	
 	Response response=labelService.createlabel(labelsDto,token);
 	System.out.println(response);
@@ -35,9 +40,9 @@ public ResponseEntity<Response>updatelabels(@RequestBody LabelsDto labelsDto,@Re
 		System.out.println(response);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	
-	} catch (IllegalArgumentException e) {
+	} catch (UserException e) {
 
-		e.printStackTrace();
+		throw new  UserException("Update not possible");
 	} catch (UnsupportedEncodingException e) {
 
 		e.printStackTrace();
@@ -46,7 +51,7 @@ public ResponseEntity<Response>updatelabels(@RequestBody LabelsDto labelsDto,@Re
 
 }
 @PostMapping("/labels/delete")
-public ResponseEntity<Response> deletelabels(LabelsDto labelsDto,String token,long id) throws IllegalArgumentException, UnsupportedEncodingException{
+public ResponseEntity<Response> deletelabels(LabelsDto labelsDto,String token,long id) throws UserException, UnsupportedEncodingException{
 	Response response=labelService.deletelabel(labelsDto,token,id);
 	System.out.println(response);
 	return new ResponseEntity<>(response,HttpStatus.OK);

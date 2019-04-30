@@ -12,8 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.response.Response;
 import com.bridgelabz.fundoo.response.ResponseToken;
+import com.bridgelabz.fundoo.user.dto.LoginDto;
 import com.bridgelabz.fundoo.user.dto.UserDto;
 import com.bridgelabz.fundoo.user.model.Emailid;
 import com.bridgelabz.fundoo.user.model.User;
@@ -47,10 +49,12 @@ public class UserService implements IUserService {
 		Response response = null;
 		Optional<User> availability = userRespository.findByEmailId(userDto.getEmailId());
 		if (availability.isPresent()) {
-			System.out.println("user is present");
+			throw new UserException("User not present");
+//			System.out.println("user is present");
 		} else {
 
 			User user = modelmapper.map(userDto, User.class);
+
 			user.setName(userDto.getName());
 			user.setEmailId(userDto.getEmailId());
 			String password = passwordEncoder.encode(userDto.getPassword());
@@ -83,29 +87,31 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ResponseToken loginuser(String emailid,String password) {
+	public ResponseToken loginuser(LoginDto loginDto) {
 
 		ResponseToken response = null;
-		Optional<User> availability = userRespository.findByEmailId(emailid);
-		System.out.println(emailid);
+        User user=modelmapper.map(loginDto, User.class);  
+		Optional<User> availability = userRespository.findByEmailId(loginDto.getEmailId());
+		System.out.println(loginDto.getEmailId());
 		if (availability.isPresent()) {
-			boolean status=passwordEncoder.matches(password, availability.get().getPassword());
-			if(status==true) {
-			String tokengenerate = tokengenerators.generateToken(availability.get().getId());
-			System.out.println(tokengenerate);
-			response = ResponseStatus.tokenStatusInfo(environment.getProperty("status.login.success"),
-					Integer.parseInt(environment.getProperty("status.success.code")), tokengenerate);
-			return response;}
+			boolean status = passwordEncoder.matches(loginDto.getPassword(), availability.get().getPassword());
+			if (status == true) {
+				String tokengenerate = tokengenerators.generateToken(availability.get().getId());
+				System.out.println(tokengenerate);
+				response = ResponseStatus.tokenStatusInfo(environment.getProperty("status.login.success"),
+						Integer.parseInt(environment.getProperty("status.success.code")), tokengenerate);
+				return response;
+			}
 
 		}
 		response = ResponseStatus.tokenStatusInfo(environment.getProperty("status.login.nosuccess"),
-				Integer.parseInt(environment.getProperty("status.success.code")), null);
+				Integer.parseInt(environment.getProperty("status.failure.code")), null);
 		return response;
 
 	}
 
 	@Override
-	public Response validateEmail(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response validateEmail(String token) throws UserException, UnsupportedEncodingException {
 
 		Response response = null;
 		long id = tokengenerators.decodeToken(token);
@@ -137,8 +143,9 @@ public class UserService implements IUserService {
 	public Response forgotpassword(String emailid) {
 		Emailid email = new Emailid();
 
-		Response response = null;
+	
 		Optional<User> user = userRespository.findByEmailId(emailid);
+		System.out.println(user.toString());
 
 		if (user.isPresent()) {
 
@@ -147,27 +154,28 @@ public class UserService implements IUserService {
 			email.setTo(emailid);
 			email.setSubject("Forgot Password");
 			try {
-				email.setBody(mailService.getlink("http://192.168.0.189:8080/user/resetPassword/", user.get().getId()));
+				email.setBody(mailService.getlink("http://localhost:4200/user/resetPassword/", user.get().getId()));
 			} catch (IllegalArgumentException ex) {
 				ex.printStackTrace();
 			}
 			mailService.send(email);
 
-			response = ResponseStatus.statusinfo(environment.getProperty("status.success.fpassword"),
+			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.fpassword"),
 					Integer.parseInt(environment.getProperty("status.success.fpassword.code")));
+			return response;
 
 		} else {
 			System.out.println("User is not present");
-			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.fpassword"),
+			Response response = ResponseStatus.statusinfo(environment.getProperty("status.failure.fpassword"),
 					Integer.parseInt(environment.getProperty("status.failure.fpassword.code")));
+			return response;
 		}
 
-		return response;
+		
 	}
 
 	@Override
-	public Response resetpassword(String token, String password)
-			throws IllegalArgumentException, UnsupportedEncodingException {
+	public Response resetpassword(String token, String password) throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long id = tokengenerators.decodeToken(token);
 		System.out.println(id);
@@ -206,8 +214,8 @@ public class UserService implements IUserService {
 			try {
 				email.setBody(mailService.getlink("http://192.168.0.189:8080/user/resetPassword/", user.get().getId()));
 
-			} catch (IllegalArgumentException ex) {
-				ex.printStackTrace();
+			} catch (UserException userException) {
+				throw new UserException("invalid mail");
 			}
 			mailService.send(email);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.fpassword"),

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.dto.LabelsDto;
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.labels.respository.LabelRespository;
@@ -39,7 +40,7 @@ public class LabelService implements ILabelsService {
 
 	@Override
 	public Response createlabel(LabelsDto labelsDto, String token)
-			throws IllegalArgumentException, UnsupportedEncodingException {
+			throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long token1 = tokenGenerators.decodeToken(token);
 		Optional<Labels> labels1 = labelRespository.findByLabelName(labelsDto.getLabelName());
@@ -64,7 +65,7 @@ public class LabelService implements ILabelsService {
 
 	@Override
 	public Response updatelabel(LabelsDto labelsDto, String token, long id)
-			throws IllegalArgumentException, UnsupportedEncodingException {
+			throws UserException, UnsupportedEncodingException {
 		Response response = null;
 //		if(labelsDto.getLabelName().isEmpty()) {
 //			System.out.println("Notes is empty");
@@ -89,7 +90,7 @@ public class LabelService implements ILabelsService {
 		if (labels1.isPresent()) {
 			System.out.println("labels is present");
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
-					Integer.parseInt(environment.getProperty("status.failure.labels.created")));
+					Integer.parseInt(environment.getProperty("status.success.labels.code")));
 
 		} else {
 
@@ -102,7 +103,7 @@ public class LabelService implements ILabelsService {
 
 	@Override
 	public Response deletelabel(LabelsDto labelsDto, String token, long id)
-			throws IllegalArgumentException, UnsupportedEncodingException {
+			throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		if (labelsDto.getLabelName().isEmpty()) {
 			System.out.println("labels is present");
@@ -111,7 +112,7 @@ public class LabelService implements ILabelsService {
 		Labels labels = labelRespository.findByLabelIdAndUserId(id, Userid);
 		labelRespository.delete(labels);
 		response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
-				Integer.parseInt(environment.getProperty("status.failure.labels.code")));
+				Integer.parseInt(environment.getProperty("status.success.labels.code")));
 
 		return response;
 	}
@@ -133,7 +134,7 @@ public class LabelService implements ILabelsService {
 				labelRespository.save(labels);
 				notesRespository.save(notes);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
-						Integer.parseInt(environment.getProperty("status.failure.labels.created")));
+						Integer.parseInt(environment.getProperty("status.success.labels.code")));
 			
 			}
 		} catch (IllegalArgumentException e) {
@@ -143,7 +144,7 @@ public class LabelService implements ILabelsService {
 
 			e.printStackTrace();
 		}
-		response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
+		response = ResponseStatus.statusinfo(environment.getProperty("status.failure.labels.created"),
 				Integer.parseInt(environment.getProperty("status.failure.labels.code")));
 
 		return response;
@@ -167,7 +168,7 @@ public class LabelService implements ILabelsService {
 				labelRespository.save(labels);
 				notesRespository.save(notes);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
-						Integer.parseInt(environment.getProperty("status.failure.labels.created")));
+						Integer.parseInt(environment.getProperty("status.success.labels.code")));
 			
 			}
 		} catch (IllegalArgumentException e) {
@@ -177,7 +178,7 @@ public class LabelService implements ILabelsService {
 
 			e.printStackTrace();
 		}
-		response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
+		response = ResponseStatus.statusinfo(environment.getProperty("status.failure.labels.created"),
 				Integer.parseInt(environment.getProperty("status.failure.labels.code")));
 
 		return response;
