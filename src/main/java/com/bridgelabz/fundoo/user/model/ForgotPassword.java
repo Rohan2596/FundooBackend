@@ -2,24 +2,24 @@ package com.bridgelabz.fundoo.user.model;
 
 public class ForgotPassword {
 
-	private String oldpassword;
-	private String newpassword;
-	public String getOldpassword() {
-		return oldpassword;
+	private String confirmPassword;
+	private String newPassword;
+	public String getConfirmPassword() {
+		return confirmPassword;
 	}
-	public void setOldpassword(String oldpassword) {
-		this.oldpassword = oldpassword;
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
 	}
-	public String getNewpassword() {
-		return newpassword;
+	public String getNewPassword() {
+		return newPassword;
 	}
-	public void setNewpassword(String newpassword) {
-		this.newpassword = newpassword;
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
 	}
 	@Override
 	public String toString() {
-		return "ForgotPassword [oldpassword=" + oldpassword + ", newpassword=" + newpassword + "]";
+		return "ForgotPassword [confirmPassword=" + confirmPassword + ", newPassword=" + newPassword + "]";
 	}
-	
+
 	
 }

@@ -8,5 +8,6 @@ import com.bridgelabz.fundoo.user.model.User;
 
 public interface UserRespository extends JpaRepository<User,Long>{
 	public Optional<User> findByEmailId(String emailId);
+    
 	
 }

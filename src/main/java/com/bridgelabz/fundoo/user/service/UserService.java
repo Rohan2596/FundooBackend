@@ -18,6 +18,7 @@ import com.bridgelabz.fundoo.response.ResponseToken;
 import com.bridgelabz.fundoo.user.dto.LoginDto;
 import com.bridgelabz.fundoo.user.dto.UserDto;
 import com.bridgelabz.fundoo.user.model.Emailid;
+import com.bridgelabz.fundoo.user.model.ForgotPassword;
 import com.bridgelabz.fundoo.user.model.User;
 import com.bridgelabz.fundoo.user.respository.UserRespository;
 import com.bridgelabz.fundoo.util.ResponseStatus;
@@ -90,7 +91,7 @@ public class UserService implements IUserService {
 	public ResponseToken loginuser(LoginDto loginDto) {
 
 		ResponseToken response = null;
-        User user=modelmapper.map(loginDto, User.class);  
+		User user = modelmapper.map(loginDto, User.class);
 		Optional<User> availability = userRespository.findByEmailId(loginDto.getEmailId());
 		System.out.println(loginDto.getEmailId());
 		if (availability.isPresent()) {
@@ -140,18 +141,19 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response forgotpassword(String emailid) {
+	public Response forgotpassword(LoginDto loginDto) {
 		Emailid email = new Emailid();
 
-	
-		Optional<User> user = userRespository.findByEmailId(emailid);
+		System.out.println(loginDto.getEmailId());
+		
+		Optional<User> user = userRespository.findByEmailId(loginDto.getEmailId());
 		System.out.println(user.toString());
 
 		if (user.isPresent()) {
 
 			System.out.println("Password changed");
 			email.setFrom("rohankadam572@gmail.com");
-			email.setTo(emailid);
+			email.setTo(loginDto.getEmailId());
 			email.setSubject("Forgot Password");
 			try {
 				email.setBody(mailService.getlink("http://localhost:4200/user/resetPassword/", user.get().getId()));
@@ -171,11 +173,10 @@ public class UserService implements IUserService {
 			return response;
 		}
 
-		
 	}
 
 	@Override
-	public Response resetpassword(String token, String password) throws UserException, UnsupportedEncodingException {
+	public Response resetpassword(String token,ForgotPassword forgotPassword) throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long id = tokengenerators.decodeToken(token);
 		System.out.println(id);
@@ -183,10 +184,26 @@ public class UserService implements IUserService {
 		Optional<User> user = userRespository.findById((long) id);
 
 		if (user.isPresent()) {
-
-			changePassword(user, password);
-			response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
-					Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));
+		    String password=passwordEncoder.encode(forgotPassword.getConfirmPassword());
+			user.get().setPassword(password);
+			System.out.println("forgotPassword.getConfirmPassword()");
+			
+			System.out.println(user.get().getPassword());
+		    user.get().setModifiedDate(LocalDateTime.now());
+		    System.out.println("UserService.resetpassword()::Date set");
+		    userRespository.save(user.get());
+//			if(forgotPassword.getConfirmPassword()==forgotPassword.getNewPassword()) {
+//			user1.setPassword(forgotPassword.getNewPassword());
+//			userRespository.save(user1);
+//			System.out.println("UserService.resetpassword()::Object saved");
+//			System.out.println(user1.getPassword()+"  "+forgotPassword.getConfirmPassword());
+//			response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
+//					Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));}
+//			else {
+				response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
+						Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));
+				
+			
 		} else {
 			System.out.println("User not present");
 			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.resetpassword"),
@@ -203,13 +220,13 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response changePassword(String emailid) {
+	public Response changePassword(LoginDto loginDto) {
 		Emailid email = new Emailid();
 		Response response = null;
-		Optional<User> user = userRespository.findByEmailId(emailid);
+		Optional<User> user = userRespository.findByEmailId(loginDto.getEmailId());
 		if (user.isPresent()) {
 			email.setFrom("rohankadam572@gmail.com");
-			email.setTo(emailid);
+			email.setTo(loginDto.getEmailId());
 			email.setSubject("Changeing Password");
 			try {
 				email.setBody(mailService.getlink("http://192.168.0.189:8080/user/resetPassword/", user.get().getId()));

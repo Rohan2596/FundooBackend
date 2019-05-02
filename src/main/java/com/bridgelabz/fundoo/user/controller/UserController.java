@@ -22,6 +22,7 @@ import com.bridgelabz.fundoo.response.Response;
 import com.bridgelabz.fundoo.response.ResponseToken;
 import com.bridgelabz.fundoo.user.dto.LoginDto;
 import com.bridgelabz.fundoo.user.dto.UserDto;
+import com.bridgelabz.fundoo.user.model.ForgotPassword;
 import com.bridgelabz.fundoo.user.service.UserService;
 
 @RestController
@@ -60,21 +61,21 @@ public class UserController {
 
 	
 	@PostMapping("/forgotPassword")
-	public ResponseEntity<Response> forgot(@RequestParam String emailid){
-		System.out.println(emailid);
+	public ResponseEntity<Response> forgot(@RequestBody LoginDto loginDto){
+		System.out.println(loginDto.getEmailId());
 		System.out.println("inside forgot");
-		Response response=userservice.forgotpassword(emailid);
+		Response response=userservice.forgotpassword(loginDto);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	@PutMapping("/resetPassword/{token}")
-	public ResponseEntity<Response> resetpassword(@PathVariable String token, @RequestParam String password) throws UserException, UnsupportedEncodingException{
-		Response response=userservice.resetpassword(token,password);
+	public ResponseEntity<Response> resetpassword(@PathVariable String token, @RequestBody ForgotPassword forgotPassword) throws UserException, UnsupportedEncodingException{
+		Response response=userservice.resetpassword(token,forgotPassword);
 		System.out.println("Inside reset");
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
-	@GetMapping("/changePassword")
-	public ResponseEntity<Response> changepassword(@RequestParam String emailid){
-		Response response=userservice.changePassword(emailid);
+	@PostMapping("/changePassword")
+	public ResponseEntity<Response> changepassword(@RequestBody LoginDto loginDto){
+		Response response=userservice.changePassword(loginDto);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
