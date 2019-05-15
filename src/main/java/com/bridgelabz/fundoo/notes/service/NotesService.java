@@ -45,46 +45,44 @@ LabelRespository labelRespository;
 	public Response create(NotesDto notesDto, String token)
 			throws UserException, UnsupportedEncodingException {
 		long token1 = tokengenerators.decodeToken(token);
-		Response response = null;
-		Optional<Notes> isNotesPresent = notesRespository.findBytitle(notesDto.getTitle());
-		if (isNotesPresent.isPresent()) {
-			System.out.println("Notes is already present create an another one");
-			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.notes.created"),
-					Integer.parseInt(environment.getProperty("status.failure.notes.code")));
-		} else {
 
+//		Optional<Notes> isNotesPresent = notesRespository.findBytitle(notesDto.getTitle());
+		if (notesDto.getTitle().isEmpty() && notesDto.getDescription().isEmpty()) {
+				throw new UserException("Notes are empty",-5);
+		}
 			Notes notes = modelMapper.map(notesDto, Notes.class);
 			Optional<User> user=userRespository.findById(token1);
 		
 			notes.setUserid(token1);
-			notes.setTitle(notesDto.getTitle());
-			notes.setDescription(notesDto.getDescription());
+//			notes.setTitle(notesDto.getTitle());
+//			notes.setDescription(notesDto.getDescription());
 			notes.setCreatedDate(LocalDateTime.now());
 			notes.setArchieve(false);
 			notes.setPin(false);
 			notes.setTrash(false);
-			user.get().getNotes().add(notes);
+			user.get().getNotes().add(notes); 
 			
 			notesRespository.save(notes);
 			userRespository.save(user.get());
-			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
-		}
+		
 		return response;
 	}
 
 	@Override
-	public List<NotesDto> read(String token) throws UserException, UnsupportedEncodingException {
+	public List<Notes> read(String token) throws UserException, UnsupportedEncodingException {
 	
 		long userid=tokengenerators.decodeToken(token);
-		List<Notes> notes = (List<Notes>)notesRespository.findByUserId(userid);
-		List<NotesDto> listnotes=new ArrayList<>();
-		for(Notes usernotes:notes) {
-			NotesDto notesDto=modelMapper.map(usernotes, NotesDto.class);
+		List<Notes> notes1 = (List<Notes>)notesRespository.findByUserId(userid);
+		List<Notes> listnotes=new ArrayList<>();
+		for(Notes usernotes:notes1) {
+			Notes notes=modelMapper.map(usernotes, Notes.class);
 			System.out.println("notes all fbsvsvbsvn sub ");
-			listnotes.add(notesDto);
+			if(notes.isTrash()==false && notes.isArchieve()==false && notes.isPin()==false) {
+			listnotes.add(notes);
 			System.out.println(listnotes);
-		}
+		}}
 		return listnotes;
 	}
 
@@ -93,17 +91,17 @@ LabelRespository labelRespository;
 			throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		if (notesDto.getTitle().isEmpty() && notesDto.getDescription().isEmpty()) {
-			System.out.println("Notes is empty");
+			throw new UserException("Notes are empty",-5);
 		}
 		long Userid = tokengenerators.decodeToken(token);
 
 		Notes notes = notesRespository.findByNoteidAndUserId(id, Userid);
-		notes.setTitle(notesDto.getDescription());
+		notes.setTitle(notesDto.getTitle());
 		notes.setDescription(notesDto.getDescription());
 		notes.setModifiedDate(LocalDateTime.now());
        notesRespository.save(notes);
-		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes"),
-				Integer.parseInt(environment.getProperty("status.success.code")));
+		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+				Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
 	}
 
@@ -112,11 +110,11 @@ LabelRespository labelRespository;
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
-		if (notes.isTrash() == false) {
+		if (notes.isTrash() == true) {
 			System.out.println("delete notes and putting into trash");
-			notes.setTrash(true);
-			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.save(notes);
+//			notes.setTrash(true);
+//			notes.setModifiedDate(LocalDateTime.now());
+			notesRespository.delete(notes);
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -141,7 +139,15 @@ LabelRespository labelRespository;
 			notesRespository.save(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
-		} else {
+		}else if(notes.isTrash()==true) {
+			System.out.println("notes trash");
+			notes.setTrash(false);
+			notes.setModifiedDate(LocalDateTime.now());
+			notesRespository.save(notes);
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		}
+		else {
 			System.out.println("trash not set");
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -156,12 +162,20 @@ LabelRespository labelRespository;
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
 
 		if (notes.isPin()==false) {
-			System.out.println("notes trash");
+			System.out.println("notes pinned");
 			notes.setPin(true);
 			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.save(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		}else if(notes.isPin()==true) {
+			System.out.println("notes unpinned");
+			notes.setPin(false);
+			notes.setModifiedDate(LocalDateTime.now());
+			notesRespository.save(notes);
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+			
 		} else {
 			System.out.println("trash not set");
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -176,9 +190,16 @@ LabelRespository labelRespository;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
 
-		if (notes.isPin()==false) {
-			System.out.println("notes trash");
-			notes.setPin(true);
+		if (notes.isArchieve()==false) {
+			System.out.println("notes unarchive");
+			notes.setArchieve(true);
+			notes.setModifiedDate(LocalDateTime.now());
+			notesRespository.save(notes);
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		}else if(notes.isArchieve()==true) {
+			System.out.println("notes unarchive");
+			notes.setArchieve(false);
 			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.save(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -237,4 +258,51 @@ LabelRespository labelRespository;
 			Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
 	}
+@Override
+	public List<Notes> trashnotes(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+		long userid=tokengenerators.decodeToken(token);
+		List<Notes> notes1 = (List<Notes>)notesRespository.findByUserId(userid);
+		List<Notes> listnotes=new ArrayList<>();
+		for(Notes usernotes:notes1) {
+			Notes notes=modelMapper.map(usernotes, Notes.class);
+			System.out.println("notes all fbsvsvbsvn sub ");
+		if(notes.isTrash()==true && notes.isArchieve()==false && notes.isPin()==false) {
+			listnotes.add(notes);
+			System.out.println(listnotes);
+		}
+		}
+		return listnotes;
+	}
+
+@Override
+public List<Notes> archivenotes(String token) throws UserException, UnsupportedEncodingException {
+	long userid=tokengenerators.decodeToken(token);
+	List<Notes> notes1 = (List<Notes>)notesRespository.findByUserId(userid);
+	List<Notes> listnotes=new ArrayList<>();
+	for(Notes usernotes:notes1) {
+		Notes notes=modelMapper.map(usernotes, Notes.class);
+		System.out.println("notes all fbsvsvbsvn sub ");
+	if(notes.isTrash()==false && notes.isArchieve()==true && notes.isPin()==false) {
+		listnotes.add(notes);
+		System.out.println(listnotes);
+	}
+	}
+	return listnotes;
+}
+
+@Override
+public List<Notes> pinnotes(String token) throws UserException, UnsupportedEncodingException {
+	long userid=tokengenerators.decodeToken(token);
+	List<Notes> notes1 = (List<Notes>)notesRespository.findByUserId(userid);
+	List<Notes> listnotes=new ArrayList<>();
+	for(Notes usernotes:notes1) {
+		Notes notes=modelMapper.map(usernotes, Notes.class);
+		System.out.println("notes all fbsvsvbsvn sub ");
+	if(notes.isTrash()==false && notes.isArchieve()==false && notes.isPin()==true) {
+		listnotes.add(notes);
+		System.out.println(listnotes);
+	}
+	}
+	return listnotes;
+}
 }

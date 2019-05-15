@@ -14,6 +14,7 @@ import com.auth0.jwt.interfaces.Verification;
 @Component
 public class TokenGenerators {
 	private static String Token="rohan";
+	
 
 	public String generateToken(long id) {
 

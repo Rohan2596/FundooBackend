@@ -50,18 +50,18 @@ public class UserService implements IUserService {
 		Response response = null;
 		Optional<User> availability = userRespository.findByEmailId(userDto.getEmailId());
 		if (availability.isPresent()) {
-			throw new UserException("User not present");
+			throw new UserException("User is present");
 //			System.out.println("user is present");
 		} else {
 
 			User user = modelmapper.map(userDto, User.class);
 
-			user.setName(userDto.getName());
-			user.setEmailId(userDto.getEmailId());
+//			user.setName(userDto.getName());
+//			user.setEmailId(userDto.getEmailId());
 			String password = passwordEncoder.encode(userDto.getPassword());
 
 			user.setPassword(password);
-			user.setPhNumber(userDto.getPhNumber());
+//			user.setPhNumber(userDto.getPhNumber());
 			user.setRegisteredDate(LocalDateTime.now());
 			user.setVerified(false);
 			User status = userRespository.save(user);

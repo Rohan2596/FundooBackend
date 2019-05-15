@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,12 +24,12 @@ import com.bridgelabz.fundoo.labels.model.Labels;
 public class Notes {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="noteid")
 	private long noteid;
 	
 	private long userId;
     private long labelId; 
-	@NotNull(message = "Please provide valid Title")
-	@NotEmpty(message = "Please provide valid Title")
+
 	private String title;
 
 	private String description;
