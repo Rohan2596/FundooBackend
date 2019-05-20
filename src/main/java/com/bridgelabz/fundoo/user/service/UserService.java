@@ -71,7 +71,7 @@ public class UserService implements IUserService {
 			emailid.setTo(userDto.getEmailId());
 			emailid.setSubject("Email verification");
 			try {
-				emailid.setBody(mailService.getlink("http://192.168.0.189:8080/user/emailvalidation/", status.getId()));
+				emailid.setBody(mailService.getlink("http://192.168.0.215:8080/user/emailvalidation/", status.getId()));
 			} catch (IllegalArgumentException ex) {
 				ex.printStackTrace();
 			}
@@ -96,7 +96,7 @@ public class UserService implements IUserService {
 		System.out.println(loginDto.getEmailId());
 		if (availability.isPresent()) {
 			boolean status = passwordEncoder.matches(loginDto.getPassword(), availability.get().getPassword());
-			if (status == true) {
+			if (status == true && availability.get().isVerified()==true) {
 				String tokengenerate = tokengenerators.generateToken(availability.get().getId());
 				System.out.println(tokengenerate);
 				response = ResponseStatus.tokenStatusInfo(environment.getProperty("status.login.success"),
@@ -122,6 +122,7 @@ public class UserService implements IUserService {
 		Optional<User> user = userRespository.findById((long) id).map(this::verify);
 
 		if (user.isPresent()) {
+			
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.register.success"),
 					Integer.parseInt(environment.getProperty("status.success.code")));

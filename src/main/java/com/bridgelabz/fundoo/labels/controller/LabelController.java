@@ -1,13 +1,16 @@
 package com.bridgelabz.fundoo.labels.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.dto.LabelsDto;
+import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.labels.service.LabelService;
 import com.bridgelabz.fundoo.response.Response;
 
@@ -32,27 +36,20 @@ public ResponseEntity<Response> createlabels(@RequestBody LabelsDto labelsDto,@R
 	System.out.println(response);
 	return  new ResponseEntity<>(response,HttpStatus.OK) ;
 }
-	@PostMapping("/labels/update")
-public ResponseEntity<Response>updatelabels(@RequestBody LabelsDto labelsDto,@RequestParam String token,@RequestParam long id){
+	@PutMapping("/labels/update")
+public ResponseEntity<Response>updatelabels(@RequestBody LabelsDto labelsDto,@RequestHeader String token,@RequestParam long id) throws UserException, UnsupportedEncodingException{
 	Response response;
-	try {
 		response = labelService.updatelabel(labelsDto,token,id);
 		System.out.println(response);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	
-	} catch (UserException e) {
 
-		throw new  UserException("Update not possible");
-	} catch (UnsupportedEncodingException e) {
 
-		e.printStackTrace();
-	}
-	return null;
 
 }
-@PostMapping("/labels/delete")
-public ResponseEntity<Response> deletelabels(LabelsDto labelsDto,String token,long id) throws UserException, UnsupportedEncodingException{
-	Response response=labelService.deletelabel(labelsDto,token,id);
+@DeleteMapping("/labels/delete")
+public ResponseEntity<Response> deletelabels(@RequestHeader String token,@RequestParam long id) throws UserException, UnsupportedEncodingException{
+	Response response=labelService.deletelabel(token,id);
 	System.out.println(response);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
@@ -63,9 +60,9 @@ public ResponseEntity<Response> readlabels(LabelsDto labelsDto){
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
-@GetMapping("/labels/addnote")
-public ResponseEntity<Response> addLabeltoNote(long labelid, String token, long noteid){
-	Response response=labelService.addLabelNote(labelid, token, noteid) ;
+@PutMapping("/labels/addnote")
+public ResponseEntity<Response> addLabeltoNote(@RequestParam long labelid,@RequestHeader String token,@RequestParam long noteid) throws IllegalArgumentException, UnsupportedEncodingException{
+	Response response=labelService.addLabelNote(labelid, token, noteid);
 	System.out.println(response);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
@@ -75,5 +72,15 @@ public ResponseEntity<Response> removeLabeltoNote(long labelid, String token, lo
 	Response response=labelService.removeLabelNote(labelid, token, noteid) ;
 	System.out.println(response);
 	return new ResponseEntity<>(response,HttpStatus.OK);
+}
+@GetMapping("/getlabels")
+public List<Labels> getlabels(@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
+	List<Labels> listlabels=labelService.allLabels(token);
+	return listlabels;
+}
+@GetMapping("/getlabelsOfNotes")
+public List<Labels> getlabelsofNote(@RequestParam long noteid,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
+	List<Labels> listlabels=labelService.allLabelsInNote(noteid, token);
+	return listlabels;
 }
 }

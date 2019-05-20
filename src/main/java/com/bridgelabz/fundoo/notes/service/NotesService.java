@@ -159,7 +159,7 @@ LabelRespository labelRespository;
 	public Response pin(String token, int id) throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
-		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
+		Notes notes = notesRespository.findByNoteidAndUserId(id, userid); 
 
 		if (notes.isPin()==false) {
 			System.out.println("notes pinned");
@@ -266,7 +266,7 @@ LabelRespository labelRespository;
 		for(Notes usernotes:notes1) {
 			Notes notes=modelMapper.map(usernotes, Notes.class);
 			System.out.println("notes all fbsvsvbsvn sub ");
-		if(notes.isTrash()==true && notes.isArchieve()==false && notes.isPin()==false) {
+		if(notes.isTrash()==true) {
 			listnotes.add(notes);
 			System.out.println(listnotes);
 		}

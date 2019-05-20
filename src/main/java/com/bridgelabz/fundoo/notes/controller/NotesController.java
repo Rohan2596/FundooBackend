@@ -53,7 +53,7 @@ public ResponseEntity<Response> updateNote(@RequestBody NotesDto notesDto,@Reque
 	System.out.println(response);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
-@PostMapping("/deletenotes")
+@DeleteMapping("/deletenotes")
 public ResponseEntity<Response> deleteNote(@RequestHeader String token, @RequestParam int id) throws UserException, UnsupportedEncodingException{
 	System.out.println("Inside delete note");
 	Response response=notesService.delete(token,id);
@@ -75,13 +75,13 @@ public ResponseEntity<Response>pin(@RequestHeader String token, @RequestParam in
 }
 
 @PutMapping("notes/archieve")
-public ResponseEntity<Response>archieve(@RequestHeader String token,@ RequestParam int id) throws UserException, UnsupportedEncodingException{
+public ResponseEntity<Response>archieve(@RequestHeader String token,@RequestParam int id) throws UserException, UnsupportedEncodingException{
 	System.out.println("Inside pin ");
 	Response response=notesService.archieve(token,id);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
-@GetMapping("notes/addNotetolabel")
-public ResponseEntity<Response> addNotetolabel(long labelid, String token, long noteid) throws UserException, UnsupportedEncodingException{
+@PutMapping("notes/addNotetolabel")
+public ResponseEntity<Response> addNotetolabel(@RequestParam long labelid,@RequestHeader String token,@RequestParam long noteid) throws UserException, UnsupportedEncodingException{
 	System.out.println("inside addnotelabel");
 	Response response=notesService.addNotetolabel(labelid, token, noteid);
 	return new ResponseEntity<>(response,HttpStatus.OK);

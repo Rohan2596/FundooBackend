@@ -2,6 +2,8 @@ package com.bridgelabz.fundoo.labels.service;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.dto.LabelsDto;
@@ -102,13 +105,10 @@ public class LabelService implements ILabelsService {
 	}
 
 	@Override
-	public Response deletelabel(LabelsDto labelsDto, String token, long id)
+	public Response deletelabel(String token, long id)
 			throws UserException, UnsupportedEncodingException {
 		Response response = null;
-		if (labelsDto.getLabelName().isEmpty()) {
-			System.out.println("labels is present");
-		}
-		long Userid = tokenGenerators.decodeToken(token);
+	   long Userid = tokenGenerators.decodeToken(token);
 		Labels labels = labelRespository.findByLabelIdAndUserId(id, Userid);
 		labelRespository.delete(labels);
 		response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
@@ -118,37 +118,32 @@ public class LabelService implements ILabelsService {
 	}
 
 	@Override
-	public Response addLabelNote(long labelid, String token, long noteid) {
+	public Response addLabelNote(long labelid, String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException {
 		Response response=null;
 		
 		long id;
-		try {
+		
 			id = tokenGenerators.decodeToken(token);
 			Optional<User> user = userRespository.findById(id);
 			Labels labels = labelRespository.findByLabelIdAndUserId(labelid, id);
 			Notes notes = notesRespository.findByNoteidAndUserId(noteid, id);
-			if (user.isPresent()) {
+		    Optional<Labels> labels1=labelRespository.findByLabelId(labelid);
+			if (notes.getNLabels().contains(labels)==false && user.isPresent()) {
 				labels.setModifiedDateTime(LocalDateTime.now());
 				labels.setNoteid(noteid);
 				notes.getNLabels().add(labels);
+				labels.setLabelId(labelid);
 				labelRespository.save(labels);
 				notesRespository.save(notes);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.labels.created"),
 						Integer.parseInt(environment.getProperty("status.success.labels.code")));
-			
-			}
-		} catch (IllegalArgumentException e) {
-
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-
-			e.printStackTrace();
-		}
+			return response;
+			}else {
 		response = ResponseStatus.statusinfo(environment.getProperty("status.failure.labels.created"),
 				Integer.parseInt(environment.getProperty("status.failure.labels.code")));
-
+			
 		return response;
-
+			}
 	}
 
 	@Override
@@ -183,6 +178,33 @@ public class LabelService implements ILabelsService {
 
 		return response;
 
+	}
+
+	@Override
+	public List<Labels> allLabels(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+		long userid=tokenGenerators.decodeToken(token);
+		List<Labels> labels1=(List<Labels>)labelRespository.findByUserId(userid);
+		List<Labels> listlabels=new ArrayList<>();
+		for(Labels userlabels:labels1) {
+			Labels labels=modelMapper.map(userlabels,Labels.class);
+			System.out.println("labels diaplay");
+			listlabels.add(labels);
+			
+		}
+
+		return listlabels;
+	}
+
+	@Override
+	public List<Labels> allLabelsInNote(long noteid, String token) throws IllegalArgumentException, UnsupportedEncodingException {
+		long userid=tokenGenerators.decodeToken(token);
+	   List<Labels> labels1=(List<Labels>)labelRespository.findByNoteid(noteid);
+	   List<Labels> listLabels=new ArrayList<>();
+	   for(Labels notelabels:labels1) {
+		   Labels labels=modelMapper.map(notelabels, Labels.class);
+		  listLabels.add(labels);
+	   }
+		return listLabels;
 	}
 
 
