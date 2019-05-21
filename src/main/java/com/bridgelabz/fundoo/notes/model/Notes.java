@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import com.bridgelabz.fundoo.labels.model.Labels;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Component
 @Entity
@@ -27,9 +28,9 @@ public class Notes {
 	@Column(name="noteid")
 	private long noteid;
 	
+ 
 	private long userId;
-    private long labelId; 
-
+	
 	private String title;
 
 	private String description;
@@ -39,18 +40,11 @@ public class Notes {
 	private boolean isPin;
 	private boolean isTrash;
 	private boolean isArchieve;
-@ManyToMany(cascade=CascadeType.ALL)
-private List<Labels> NLabels;
-
 	
-	
-	public long getLabelId() {
-	return labelId;
-}
+	    @JsonIgnore
+		@ManyToMany(cascade=CascadeType.ALL)
+		private List<Labels> NLabels;
 
-public void setLabelId(long labelId) {
-	this.labelId = labelId;
-}
 
 	public long getId() {
 		return noteid;
@@ -134,12 +128,12 @@ public void setLabelId(long labelId) {
 
 	@Override
 	public String toString() {
-		return "Notes [noteid=" + noteid + ", userId=" + userId + ", labelId=" + labelId + ", title=" + title
-				+ ", description=" + description + ", modifiedDate=" + modifiedDate + ", createdDate=" + createdDate
-				+ ", isPin=" + isPin + ", isTrash=" + isTrash + ", isArchieve=" + isArchieve + ", NLabels=" + NLabels
-				+ "]";
+		return "Notes [noteid=" + noteid + ", userId=" + userId + ", title=" + title + ", description=" + description
+				+ ", modifiedDate=" + modifiedDate + ", createdDate=" + createdDate + ", isPin=" + isPin + ", isTrash="
+				+ isTrash + ", isArchieve=" + isArchieve+"]";
 	}
 
+	
 
 
 

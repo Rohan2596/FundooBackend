@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.exception.UserException;
+import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.notes.dto.NotesDto;
 import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.notes.service.NotesService;
@@ -86,8 +87,8 @@ public ResponseEntity<Response> addNotetolabel(@RequestParam long labelid,@Reque
 	Response response=notesService.addNotetolabel(labelid, token, noteid);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
-@GetMapping("notes/removeNotetolabel")
-public ResponseEntity<Response> removeNotetolabel(long labelid, String token, long noteid) throws UserException, UnsupportedEncodingException{
+@PutMapping("notes/removeNotetolabel")
+public ResponseEntity<Response> removeNotetolabel(@RequestParam long labelid,@RequestHeader String token,@RequestParam long noteid) throws UserException, UnsupportedEncodingException{
 	System.out.println("inside addnotelabel");
 	Response response=notesService.removeNotetolabel(labelid, token, noteid);
 	return new ResponseEntity<>(response,HttpStatus.OK);
@@ -101,14 +102,21 @@ public List<Notes> trashNote(@RequestHeader String token) throws UserException, 
 }
 @GetMapping("/getarchivenotes")
 public List<Notes> archiveNote(@RequestHeader String token) throws UserException, UnsupportedEncodingException{
-	List<Notes> listnotes=notesService.archivenotes(token);
+	List<Notes> archievenotes=notesService.archivenotes(token);
 	
-	return listnotes;
+	return archievenotes;
 }
 @GetMapping("/getpinnotes")
 public List<Notes> pinNote(@RequestHeader String token) throws UserException, UnsupportedEncodingException{
-	List<Notes> listnotes=notesService.pinnotes(token);
+	List<Notes> pinnotes=notesService.pinnotes(token);
 	
-	return listnotes;
+	return pinnotes;
 }
+@GetMapping("/getallNotelabel")
+public List<Labels> allNotelabel(@RequestHeader String token,@RequestParam long noteid) throws UserException, UnsupportedEncodingException{
+	List<Labels> allnoteslabel=notesService.getAlllabels(token, noteid);
+	
+	return allnoteslabel;
+}
+
 }

@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import com.bridgelabz.fundoo.notes.model.Notes;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Component
 @Entity
@@ -33,15 +34,7 @@ public class Labels {
 	@ManyToMany(cascade=CascadeType.ALL)
 	private List<Notes> LNotes;
    
-	private long  noteid;
 	
-	public long getNoteid() {
-		return noteid;
-	}
-
-	public void setNoteid(long noteid) {
-		this.noteid = noteid;
-	}
 
 	public long getLabelId() {
 		return labelId;
@@ -83,10 +76,13 @@ public class Labels {
 		this.userId = userId;
 	}
 
+	
+	@JsonIgnore
 	public List<Notes> getLNotes() {
 		return LNotes;
 	}
 
+	@JsonIgnore
 	public void setLNotes(List<Notes> lNotes) {
 		LNotes = lNotes;
 	}
@@ -94,8 +90,7 @@ public class Labels {
 	@Override
 	public String toString() {
 		return "Labels [labelId=" + labelId + ", userId=" + userId + ", labelName=" + labelName + ", modifiedDateTime="
-				+ modifiedDateTime + ", createdDateTime=" + createdDateTime + ", LNotes=" + LNotes + ", noteid="
-				+ noteid + "]";
+				+ modifiedDateTime + ", createdDateTime=" + createdDateTime + ", LNotes=" + LNotes + "]";
 	}
 
 	

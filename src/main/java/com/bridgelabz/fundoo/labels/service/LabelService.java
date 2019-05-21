@@ -130,7 +130,7 @@ public class LabelService implements ILabelsService {
 		    Optional<Labels> labels1=labelRespository.findByLabelId(labelid);
 			if (notes.getNLabels().contains(labels)==false && user.isPresent()) {
 				labels.setModifiedDateTime(LocalDateTime.now());
-				labels.setNoteid(noteid);
+				labels.getLNotes().add(notes);
 				notes.getNLabels().add(labels);
 				labels.setLabelId(labelid);
 				labelRespository.save(labels);
@@ -158,7 +158,7 @@ public class LabelService implements ILabelsService {
 			Notes notes = notesRespository.findByNoteidAndUserId(noteid, id);
 			if (user.isPresent()) {
 				labels.setModifiedDateTime(LocalDateTime.now());
-				labels.setNoteid(noteid);
+				labels.getLNotes().add(notes);
 				notes.getNLabels().remove(labels);
 				labelRespository.save(labels);
 				notesRespository.save(notes);
@@ -195,17 +195,17 @@ public class LabelService implements ILabelsService {
 		return listlabels;
 	}
 
-	@Override
-	public List<Labels> allLabelsInNote(long noteid, String token) throws IllegalArgumentException, UnsupportedEncodingException {
-		long userid=tokenGenerators.decodeToken(token);
-	   List<Labels> labels1=(List<Labels>)labelRespository.findByNoteid(noteid);
-	   List<Labels> listLabels=new ArrayList<>();
-	   for(Labels notelabels:labels1) {
-		   Labels labels=modelMapper.map(notelabels, Labels.class);
-		  listLabels.add(labels);
-	   }
-		return listLabels;
-	}
+//	@Override
+//	public List<Labels> allLabelsInNote(long noteid, String token) throws IllegalArgumentException, UnsupportedEncodingException {
+//		long userid=tokenGenerators.decodeToken(token);
+//	   List<Labels> labels1=(List<Labels>)labelRespository.findBy;
+//	   List<Labels> listLabels=new ArrayList<>();
+//	   for(Labels notelabels:labels1) {
+//		   Labels labels=modelMapper.map(notelabels, Labels.class);
+//		  listLabels.add(labels);
+//	   }
+//		return listLabels;
+//	}
 
 
 

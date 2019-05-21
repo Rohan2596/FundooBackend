@@ -78,9 +78,9 @@ public List<Labels> getlabels(@RequestHeader String token) throws IllegalArgumen
 	List<Labels> listlabels=labelService.allLabels(token);
 	return listlabels;
 }
-@GetMapping("/getlabelsOfNotes")
-public List<Labels> getlabelsofNote(@RequestParam long noteid,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
-	List<Labels> listlabels=labelService.allLabelsInNote(noteid, token);
-	return listlabels;
-}
+//@GetMapping("/getlabelsOfNotes")
+//public List<Labels> getlabelsofNote(@RequestParam long noteid,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
+//	List<Labels> listlabels=labelService.allLabelsInNote(noteid, token);
+//	return listlabels;
+//}
 }

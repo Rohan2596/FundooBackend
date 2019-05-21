@@ -19,5 +19,5 @@ Response deletelabel(String token,long id) throws UserException, UnsupportedEnco
 Response addLabelNote(long labelid,String token,long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 Response removeLabelNote(long labelid,String token,long noteid);
 List<Labels> allLabels(String token) throws IllegalArgumentException, UnsupportedEncodingException;
-List<Labels> allLabelsInNote(long noteid, String token) throws IllegalArgumentException, UnsupportedEncodingException;
+//List<Labels> allLabelsInNote(long noteid, String token) throws IllegalArgumentException, UnsupportedEncodingException;
 }

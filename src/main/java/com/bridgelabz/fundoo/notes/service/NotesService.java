@@ -222,7 +222,7 @@ LabelRespository labelRespository;
 	if(user.isPresent())
 	{
 		notes.setModifiedDate(LocalDateTime.now());
-		notes.setLabelId(labelid);
+		notes.getNLabels().add(labels);
 		labels.getLNotes().add(notes);
 		labelRespository.save(labels);
 		notesRespository.save(notes);
@@ -246,7 +246,7 @@ LabelRespository labelRespository;
 	if(user.isPresent())
 	{
 		notes.setModifiedDate(LocalDateTime.now());
-		notes.setLabelId(labelid);
+		notes.getNLabels().remove(labels);
 		labels.getLNotes().remove(notes);
 		labelRespository.save(labels);
 		notesRespository.save(notes);
@@ -291,18 +291,52 @@ public List<Notes> archivenotes(String token) throws UserException, UnsupportedE
 }
 
 @Override
-public List<Notes> pinnotes(String token) throws UserException, UnsupportedEncodingException {
+public List<Notes> pinnotes(String token) throws UserException, UnsupportedEncodingException 
+{
 	long userid=tokengenerators.decodeToken(token);
-	List<Notes> notes1 = (List<Notes>)notesRespository.findByUserId(userid);
+	System.out.println("^^^^^^^"+userid);
+	List<Notes> notes1 =  notesRespository.findByUserId(userid);
+	System.out.println("****************************"+notes1.toString());
+	
 	List<Notes> listnotes=new ArrayList<>();
-	for(Notes usernotes:notes1) {
+	System.out.println(listnotes.toString());
+	
+	for(Notes usernotes:notes1) 
+	{
 		Notes notes=modelMapper.map(usernotes, Notes.class);
 		System.out.println("notes all fbsvsvbsvn sub ");
-	if(notes.isTrash()==false && notes.isArchieve()==false && notes.isPin()==true) {
-		listnotes.add(notes);
-		System.out.println(listnotes);
-	}
+		
+		if(notes.isTrash()==false && notes.isArchieve()==false && notes.isPin()==true)
+		{
+		        listnotes.add(notes);
+		        System.out.println(listnotes);
+	    }
 	}
 	return listnotes;
 }
+
+@Override
+public List<Labels> getAlllabels(String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException 
+{
+	long userid=tokengenerators.decodeToken(token);
+	Optional<User> user = userRespository.findById(userid);
+	if(user.isPresent()) 
+	{
+	Optional<Notes> note = notesRespository.findById(noteid);
+	if(note.isPresent()) 
+	{
+	List<Labels> listLabel = note.get().getNLabels();
+	
+	return listLabel;
+	}else {
+		throw new UserException("note is not present");
+	}
+	
+	}
+	else {
+		throw new UserException("user is not present");
+	}
+	
+	}
+
 }

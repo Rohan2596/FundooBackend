@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import com.bridgelabz.fundoo.exception.UserException;
+import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.notes.dto.NotesDto;
 import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.response.Response;
@@ -21,4 +22,6 @@ Response removeNotetolabel(long labelid,String token,long noteid) throws UserExc
 List<Notes> trashnotes(String token) throws UserException, UnsupportedEncodingException;
 List<Notes> archivenotes(String token) throws UserException, UnsupportedEncodingException;
 
-List<Notes> pinnotes(String token) throws UserException, UnsupportedEncodingException;}
+List<Notes> pinnotes(String token) throws UserException, UnsupportedEncodingException;
+List<Labels> getAlllabels(String token,long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
+}
