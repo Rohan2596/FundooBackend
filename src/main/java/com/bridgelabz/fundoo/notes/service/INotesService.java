@@ -17,8 +17,11 @@ Response delete(String token,int id) throws UserException, UnsupportedEncodingEx
 Response trash(String token,int id) throws UserException, UnsupportedEncodingException;
 Response pin(String token,int id) throws UserException, UnsupportedEncodingException;
 Response archieve(String token,int id) throws UserException, UnsupportedEncodingException;
+Response color(String token,long noteid,String color) throws IllegalArgumentException, UnsupportedEncodingException;
+
 Response addNotetolabel(long labelid,String token,long noteid) throws UserException, UnsupportedEncodingException;
 Response removeNotetolabel(long labelid,String token,long noteid) throws UserException, UnsupportedEncodingException;
+
 List<Notes> trashnotes(String token) throws UserException, UnsupportedEncodingException;
 List<Notes> archivenotes(String token) throws UserException, UnsupportedEncodingException;
 

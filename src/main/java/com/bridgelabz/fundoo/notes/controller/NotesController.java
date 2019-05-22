@@ -81,6 +81,13 @@ public ResponseEntity<Response>archieve(@RequestHeader String token,@RequestPara
 	Response response=notesService.archieve(token,id);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 }
+@PutMapping("notes/setcolor")
+public ResponseEntity<Response>color(@RequestHeader String token,@RequestParam long noteid,@RequestParam String color) throws IllegalArgumentException, UnsupportedEncodingException{
+	System.out.println("setting the color of notes ");
+	Response response=notesService.color(token, noteid, color);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+	
+}
 @PutMapping("notes/addNotetolabel")
 public ResponseEntity<Response> addNotetolabel(@RequestParam long labelid,@RequestHeader String token,@RequestParam long noteid) throws UserException, UnsupportedEncodingException{
 	System.out.println("inside addnotelabel");

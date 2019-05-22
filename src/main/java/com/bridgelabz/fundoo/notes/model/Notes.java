@@ -40,8 +40,17 @@ public class Notes {
 	private boolean isPin;
 	private boolean isTrash;
 	private boolean isArchieve;
+	private  String color;
 	
-	    @JsonIgnore
+	    public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+		@JsonIgnore
 		@ManyToMany(cascade=CascadeType.ALL)
 		private List<Labels> NLabels;
 
@@ -130,7 +139,7 @@ public class Notes {
 	public String toString() {
 		return "Notes [noteid=" + noteid + ", userId=" + userId + ", title=" + title + ", description=" + description
 				+ ", modifiedDate=" + modifiedDate + ", createdDate=" + createdDate + ", isPin=" + isPin + ", isTrash="
-				+ isTrash + ", isArchieve=" + isArchieve+"]";
+				+ isTrash + ", isArchieve=" + isArchieve+ ", color=" + color+    "]";
 	}
 
 	

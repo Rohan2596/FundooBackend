@@ -339,4 +339,30 @@ public List<Labels> getAlllabels(String token, long noteid) throws IllegalArgume
 	
 	}
 
+@Override
+public Response color(String token, long  noteid,String color) throws IllegalArgumentException, UnsupportedEncodingException {
+	Response response=null;
+	long userid=tokengenerators.decodeToken(token);
+Optional<User> user=userRespository.findById(userid);
+Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
+	if(user.isPresent()) {
+		Optional<Notes> note=notesRespository.findById(noteid);
+		if(note.isPresent()) 
+		{
+		
+			notes.setColor(color);
+			notesRespository.save(notes);
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		return response;
+		}else {
+			throw new UserException("note is not present");
+		}
+		}else {
+			throw new UserException("User is not present");
+		}
+
+	
+
+}
 }
