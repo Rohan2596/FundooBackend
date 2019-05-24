@@ -282,7 +282,7 @@ public List<Notes> archivenotes(String token) throws UserException, UnsupportedE
 	for(Notes usernotes:notes1) {
 		Notes notes=modelMapper.map(usernotes, Notes.class);
 		System.out.println("notes all fbsvsvbsvn sub ");
-	if( notes.isArchieve()==true ) {
+	if( notes.isArchieve()==true) {
 		listnotes.add(notes);
 		System.out.println(listnotes);
 	}
