@@ -1,8 +1,11 @@
 package com.bridgelabz.fundoo.user.service;
 
 import java.io.UnsupportedEncodingException;
+import java.io.*;
 
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.response.Response;
@@ -18,4 +21,6 @@ Response validateEmail(String token) throws UserException, UnsupportedEncodingEx
 Response forgotpassword(LoginDto loginDto);
 Response resetpassword(String token,ForgotPassword forgotPassword) throws UserException, UnsupportedEncodingException;
 Response changePassword(LoginDto loginDto);
+Response uploadImage(String token,MultipartFile file) throws IllegalArgumentException, UnsupportedEncodingException;
+Resource getImage(String token) throws IllegalArgumentException, UnsupportedEncodingException ;
 }

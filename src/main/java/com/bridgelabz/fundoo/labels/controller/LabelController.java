@@ -29,14 +29,16 @@ import com.bridgelabz.fundoo.response.Response;
 public class LabelController {
 @Autowired
 LabelService labelService;
-	@PostMapping("/labels/create")
+
+@PostMapping("/labels/create")
 public ResponseEntity<Response> createlabels(@RequestBody LabelsDto labelsDto,@RequestHeader String token) throws UserException, UnsupportedEncodingException{
 	
 	Response response=labelService.createlabel(labelsDto,token);
 	System.out.println(response);
 	return  new ResponseEntity<>(response,HttpStatus.OK) ;
 }
-	@PutMapping("/labels/update")
+
+@PutMapping("/labels/update")
 public ResponseEntity<Response>updatelabels(@RequestBody LabelsDto labelsDto,@RequestHeader String token,@RequestParam long id) throws UserException, UnsupportedEncodingException{
 	Response response;
 		response = labelService.updatelabel(labelsDto,token,id);

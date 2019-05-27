@@ -1,16 +1,25 @@
 package com.bridgelabz.fundoo.user.service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.response.Response;
@@ -43,6 +52,9 @@ public class UserService implements IUserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	 Path path = Paths.get("/home/admin1/Desktop/icons");
+	
+	
 	@Override
 	public Response registeruser(UserDto userDto, StringBuffer requestUrl) {
 		System.out.println(requestUrl);
@@ -246,5 +258,52 @@ public class UserService implements IUserService {
 
 		return response;
 	}
+
+	@Override
+	public Response uploadImage(String token, MultipartFile file) throws IllegalArgumentException, UnsupportedEncodingException {
+	   Response response=null;
+	   long userid=tokengenerators.decodeToken(token);
+	   Optional<User> user=userRespository.findById(userid);
+	   if(user.isPresent()) {
+		   System.out.println("user is present");
+		   UUID uuid=UUID.randomUUID();
+		   String uniqueId=uuid.toString();
+		   try{
+			   Files.copy(file.getInputStream(), path.resolve(uniqueId), StandardCopyOption.REPLACE_EXISTING);
+		   }catch(IOException e) {
+			   e.printStackTrace();
+		   }
+		   user.get().setProfilePic(uniqueId);
+		   userRespository.save(user.get());
+		   response = ResponseStatus.statusinfo(environment.getProperty("status.login.success"),
+					Integer.parseInt(environment.getProperty("status.success.code")));
+			return response;
+	   }else {
+		    throw new UserException("user is not present",-20); 
+	   }
+	   
+	}
+
+	@Override
+	public Resource getImage(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+
+long userid=tokengenerators.decodeToken(token);
+Optional<User> user=userRespository.findById(userid);
+if(user.isPresent()) {
+	System.out.println("user is present");
+	Path imagepath=path.resolve(user.get().getProfilePic());
+	try {
+		Resource resources= new UrlResource(imagepath.toUri());
+		if(resources.exists()||resources.isReadable()) {
+			return resources;
+		}
+	}catch(IOException e) {
+		e.printStackTrace();
+	}
+}
+		return null;
+	}
+	
+	
 
 }

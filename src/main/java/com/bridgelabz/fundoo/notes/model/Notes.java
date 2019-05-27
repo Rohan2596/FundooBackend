@@ -42,6 +42,13 @@ public class Notes {
 	private boolean isArchieve;
 	private  String color;
 	
+	
+	@JsonIgnore
+	@ManyToMany(cascade=CascadeType.ALL)
+	private List<Labels> NLabels;
+	
+	
+	
 	    public String getColor() {
 		return color;
 	}
@@ -50,9 +57,7 @@ public class Notes {
 		this.color = color;
 	}
 
-		@JsonIgnore
-		@ManyToMany(cascade=CascadeType.ALL)
-		private List<Labels> NLabels;
+		
 
 
 	public long getId() {

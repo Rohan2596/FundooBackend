@@ -48,13 +48,24 @@ public class User {
 	private boolean isVerified = false;
 	private LocalDateTime registeredDate;
 	private LocalDateTime modifiedDate;
+	private String profilePic;
 	
 	
 	
-   @OneToMany(cascade=CascadeType.ALL)
+   public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+
+@OneToMany(cascade=CascadeType.ALL)
 	private List<Notes> notes;
  @OneToMany(cascade=CascadeType.ALL)
    private List<Labels> labels;
+ 
+ 
    
 	public List<Labels> getLabels() {
 	return labels;
