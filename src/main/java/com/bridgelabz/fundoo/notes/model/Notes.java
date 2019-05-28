@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import com.bridgelabz.fundoo.labels.model.Labels;
+import com.bridgelabz.fundoo.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Component
@@ -41,15 +42,33 @@ public class Notes {
 	private boolean isTrash;
 	private boolean isArchieve;
 	private  String color;
+	private String reminder;
 	
-	
+	public String getReminder() {
+		return reminder;
+	}
+
+	public void setReminder(String reminder) {
+		this.reminder = reminder;
+	}
+
 	@JsonIgnore
 	@ManyToMany(cascade=CascadeType.ALL)
 	private List<Labels> NLabels;
 	
+	@JsonIgnore
+	@ManyToMany(cascade=CascadeType.ALL)
+	private List<User> collabId;
 	
-	
-	    public String getColor() {
+	    public List<User> getCollabId() {
+		return collabId;
+	}
+
+	public void setCollabId(List<User> collabId) {
+		this.collabId = collabId;
+	}
+
+		public String getColor() {
 		return color;
 	}
 
@@ -144,7 +163,7 @@ public class Notes {
 	public String toString() {
 		return "Notes [noteid=" + noteid + ", userId=" + userId + ", title=" + title + ", description=" + description
 				+ ", modifiedDate=" + modifiedDate + ", createdDate=" + createdDate + ", isPin=" + isPin + ", isTrash="
-				+ isTrash + ", isArchieve=" + isArchieve+ ", color=" + color+    "]";
+				+ isTrash + ", isArchieve=" + isArchieve+ ", color=" + color+ ", reminder="+reminder+   "]";
 	}
 
 	

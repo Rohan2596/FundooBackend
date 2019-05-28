@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.notes.model.Notes;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Component
 @Entity
@@ -65,8 +67,18 @@ public class User {
  @OneToMany(cascade=CascadeType.ALL)
    private List<Labels> labels;
  
- 
+@JsonIgnore 
+@ManyToMany(cascade=CascadeType.ALL) 
+ private List<Notes> collabnotes;
    
+	public List<Notes> getCollabnotes() {
+	return collabnotes;
+}
+
+public void setCollabnotes(List<Notes> collabnotes) {
+	this.collabnotes = collabnotes;
+}
+
 	public List<Labels> getLabels() {
 	return labels;
 }
@@ -156,7 +168,8 @@ public void setLabels(List<Labels> labels) {
 	public String toString() {
 		return "User [userId=" + userId + ", name=" + name + ", emailId=" + emailId + ", phNumber=" + phNumber
 				+ ", password=" + password + ", isVerified=" + isVerified + ", registeredDate=" + registeredDate
-				+ ", modifiedDate=" + modifiedDate + ", notes=" + notes + ", labels=" + labels + "]";
+				+ ", modifiedDate=" + modifiedDate + ", notes=" + notes + ", labels=" + labels +
+				 ", collabnotes=" + collabnotes +  "]";
 	}
 
 

@@ -1,8 +1,11 @@
 package com.bridgelabz.fundoo.notes.service;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -212,6 +215,72 @@ LabelRespository labelRespository;
 		return response;
 	}
 
+	
+	@Override
+	public Response addCollabtoNote(long noteid, String token, String collabemailid) throws IllegalArgumentException, UnsupportedEncodingException {
+	Response response=null;
+	long userid=tokengenerators.decodeToken(token);
+	Optional<User> user=userRespository.findById(userid);
+	if(user.isPresent()) {
+		Notes notes =notesRespository.findByNoteidAndUserId(noteid, userid);
+		if(!notes.equals(null)) {
+			User collabid=userRespository.findByEmailId(collabemailid).get();
+			
+			if(!collabid.equals(null) && notes.getCollabId().contains(collabid)==false) {
+				notes.setModifiedDate(LocalDateTime.now());
+				notes.getCollabId().add(collabid);
+				collabid.getCollabnotes().add(notes);
+				notesRespository.save(notes);
+				userRespository.save(collabid);
+				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+						Integer.parseInt(environment.getProperty("status.success.notes.code")));
+			}else {
+				throw new UserException("collabid is not presen");
+			}
+		}else {
+			throw new UserException("notes not present",-10);
+		}
+	}else {
+	throw new UserException("user exception");
+	}
+	response = ResponseStatus.statusinfo(environment.getProperty("status.failure.notes.created"),
+			Integer.parseInt(environment.getProperty("status.failure.notes.code")));
+		return  response;}
+	
+	@Override
+	public Response removeCollabtoNote(long noteid, String token, String collabemailid) throws IllegalArgumentException, UnsupportedEncodingException {
+		Response response=null;
+		long userid=tokengenerators.decodeToken(token);
+		Optional<User> user=userRespository.findById(userid);
+		if(user.isPresent()) {
+			Notes notes =notesRespository.findByNoteidAndUserId(noteid, userid);
+			if(!notes.equals(null)) {
+				User collabid=userRespository.findByEmailId(collabemailid).get();
+				
+				if(!collabid.equals(null) && notes.getCollabId().contains(collabid)==true) {
+					notes.setModifiedDate(LocalDateTime.now());
+					notes.getCollabId().remove(collabid);
+					collabid.getCollabnotes().remove(notes);
+					notesRespository.save(notes);
+					userRespository.save(collabid);
+					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+							Integer.parseInt(environment.getProperty("status.success.notes.code")));
+				}else {
+					throw new UserException("collabid is not presen");
+				}
+			}else {
+				throw new UserException("notes not present",-10);
+			}
+		}else {
+		throw new UserException("user exception");
+		}
+		response = ResponseStatus.statusinfo(environment.getProperty("status.failure.notes.created"),
+				Integer.parseInt(environment.getProperty("status.failure.notes.code")));
+			return  response;
+	}
+	
+	
+	
 	@Override
 	public Response addNotetolabel(long labelid, String token, long noteid) throws UserException, UnsupportedEncodingException {
 	Response response=null;
@@ -338,6 +407,23 @@ public List<Labels> getAlllabels(String token, long noteid) throws IllegalArgume
 	}
 	
 	}
+@Override
+public List<Notes> getallCollabrators(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+	long userid=tokengenerators.decodeToken(token);
+	Optional<User> user = userRespository.findById(userid);
+	if(user.isPresent()) 
+	{
+	
+		List<Notes> collablist = user.get().getCollabnotes();
+		 
+		return collablist;
+	
+		}
+		else {
+			throw new UserException("user is not present");
+		}
+}
+
 
 @Override
 public Response color(String token, long  noteid,String color) throws IllegalArgumentException, UnsupportedEncodingException {
@@ -365,4 +451,48 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 	
 
 }
+
+@Override
+public Response reminder(String token, long noteid, String date) throws IllegalArgumentException, UnsupportedEncodingException {
+	Response response=null;
+	long userid=tokengenerators.decodeToken(token);
+Optional<User> user=userRespository.findById(userid);
+Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
+	if(user.isPresent()) {
+		Optional<Notes> note=notesRespository.findById(noteid);
+		if(note.isPresent()) 
+		{
+		
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+	        
+
+	        try {
+
+	            Date date1 = formatter.parse(date);
+	            System.out.println(date1);
+	            System.out.println(formatter.format(date1));
+	            String Date=formatter.format(date1);
+	            notes.setReminder(Date);
+	        	notesRespository.save(notes);
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	        }
+	       
+			
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		return response;
+		}else {
+			throw new UserException("note is not present");
+		}
+		}else {
+			throw new UserException("User is not present");
+		}
+}
+
+
+
+
+
+
 }

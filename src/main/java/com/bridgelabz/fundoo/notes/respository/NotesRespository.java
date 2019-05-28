@@ -15,4 +15,6 @@ public interface  NotesRespository  extends JpaRepository<Notes,Long>{
 
 	public Notes findByNoteidAndUserId(long noteid , long userId);
 	public List<Notes> findByUserId(long userid);
+	
+	
 	}

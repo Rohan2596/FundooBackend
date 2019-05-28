@@ -25,6 +25,7 @@ import com.bridgelabz.fundoo.notes.dto.NotesDto;
 import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.notes.service.NotesService;
 import com.bridgelabz.fundoo.response.Response;
+import com.bridgelabz.fundoo.user.model.User;
 
 
 @RestController
@@ -124,6 +125,33 @@ public List<Labels> allNotelabel(@RequestHeader String token,@RequestParam long 
 	List<Labels> allnoteslabel=notesService.getAlllabels(token, noteid);
 	
 	return allnoteslabel;
+}
+@GetMapping("/getallcollablist")
+public List<Notes> allcollab(@RequestHeader String token) throws UserException, UnsupportedEncodingException{
+	List<Notes> allnoteslabel=notesService.getallCollabrators(token);
+	
+	return allnoteslabel;}
+
+
+@PutMapping("notes/addcollabrator")
+public ResponseEntity<Response> addcollaboratortonote(@RequestParam long noteid,@RequestHeader String token,@RequestParam String collabemailid) throws UserException, UnsupportedEncodingException{
+	System.out.println("inside Add collaborator to note");
+	Response response=notesService.addCollabtoNote(noteid, token, collabemailid);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+
+}
+@PutMapping("notes/removecollabrator")
+public ResponseEntity<Response> removecollaboratortonote(@RequestParam long noteid,@RequestHeader String token,@RequestParam String collabemailid) throws IllegalArgumentException, UnsupportedEncodingException{
+	System.out.println("inside remove collaborator to note");
+	Response response=notesService.removeCollabtoNote(noteid, token, collabemailid);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+}
+@PutMapping("notes/reminder")
+public ResponseEntity<Response>reminder(@RequestHeader String token,@RequestParam long noteid,@RequestParam String date) throws IllegalArgumentException, UnsupportedEncodingException{
+	System.out.println("setting the color of notes ");
+	Response response=notesService.reminder(token, noteid, date);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+	
 }
 
 }

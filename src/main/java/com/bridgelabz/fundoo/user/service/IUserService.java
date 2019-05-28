@@ -23,4 +23,5 @@ Response resetpassword(String token,ForgotPassword forgotPassword) throws UserEx
 Response changePassword(LoginDto loginDto);
 Response uploadImage(String token,MultipartFile file) throws IllegalArgumentException, UnsupportedEncodingException;
 Resource getImage(String token) throws IllegalArgumentException, UnsupportedEncodingException ;
+
 }
