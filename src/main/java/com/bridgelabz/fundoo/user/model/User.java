@@ -35,7 +35,10 @@ public class User {
 	@NotEmpty(message = "Please provide valid Name")
 	@NotNull(message = "Please provide Valid Name")
 	private String name;
-
+   
+	
+	@NotEmpty(message = "Please provide valid Name")
+	@NotNull(message = "Please provide Valid Name")
 	@Email(message = "Please provide Valid Emailid")
 	private String emailId;
 

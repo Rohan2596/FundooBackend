@@ -3,6 +3,7 @@
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -39,7 +40,7 @@ public class UserController {
 	LoginDto loginDto = new LoginDto();
 	
 	@PostMapping("/registration")
-	public ResponseEntity<Response> register (@RequestBody UserDto userdto, HttpServletRequest httpServletRequest) {
+	public ResponseEntity<Response> register (@RequestBody @Valid UserDto userdto, HttpServletRequest httpServletRequest) {
 		StringBuffer requestUrl = httpServletRequest.getRequestURL();
 		Response response=userservice.registeruser(userdto, requestUrl);
 		System.out.println(response);
@@ -47,7 +48,7 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<ResponseToken> loginuser(@RequestBody LoginDto loginDto){
+	public ResponseEntity<ResponseToken> loginuser(@RequestBody @Valid LoginDto loginDto){
 		//System.out.println("login");
 		//System.out.println("login dto "+loginDto.toString());
 		ResponseToken response=userservice.loginuser(loginDto);
@@ -64,7 +65,7 @@ public class UserController {
 
 	
 	@PostMapping("/forgotPassword")
-	public ResponseEntity<Response> forgot(@RequestBody LoginDto loginDto){
+	public ResponseEntity<Response> forgot(@RequestBody @Valid LoginDto loginDto){
 		System.out.println(loginDto.getEmailId());
 		System.out.println("inside forgot");
 		Response response=userservice.forgotpassword(loginDto);
@@ -77,7 +78,7 @@ public class UserController {
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	@PostMapping("/changePassword")
-	public ResponseEntity<Response> changepassword(@RequestBody LoginDto loginDto){
+	public ResponseEntity<Response> changepassword(@RequestBody  @Valid LoginDto loginDto){
 		Response response=userservice.changePassword(loginDto);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}

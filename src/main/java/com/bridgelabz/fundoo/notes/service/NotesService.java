@@ -52,7 +52,7 @@ LabelRespository labelRespository;
 //		Optional<Notes> isNotesPresent = notesRespository.findBytitle(notesDto.getTitle());
 		if (notesDto.getTitle().isEmpty() && notesDto.getDescription().isEmpty()) {
 				throw new UserException("Notes are empty",-5);
-		}
+		}else {
 			Notes notes = modelMapper.map(notesDto, Notes.class);
 			Optional<User> user=userRespository.findById(token1);
 		
@@ -69,8 +69,8 @@ LabelRespository labelRespository;
 			userRespository.save(user.get());
 			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
-		
 		return response;
+		}
 	}
 
 	@Override
@@ -351,7 +351,7 @@ public List<Notes> archivenotes(String token) throws UserException, UnsupportedE
 	for(Notes usernotes:notes1) {
 		Notes notes=modelMapper.map(usernotes, Notes.class);
 		System.out.println("notes all fbsvsvbsvn sub ");
-	if( notes.isArchieve()==true) {
+	if( notes.isArchieve()==true&&notes.isPin()==false) {
 		listnotes.add(notes);
 		System.out.println(listnotes);
 	}

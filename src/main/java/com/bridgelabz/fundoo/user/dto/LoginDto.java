@@ -1,9 +1,18 @@
 package com.bridgelabz.fundoo.user.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
+
 public class LoginDto {
 	
+	@NotEmpty(message = "Enter email address")
+	@Pattern(regexp = "^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$", message = "enetr valid email address..!")
+    private String emailId;
 	
-	private String emailId;
+	@NotEmpty(message = "Enter password ...!")
+	@Length(min = 8, max = 32, message = "length :6 to 32 characters")
 	private String password;
 	
 	public String getEmailId() {
