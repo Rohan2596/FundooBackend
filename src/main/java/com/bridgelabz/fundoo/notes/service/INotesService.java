@@ -44,7 +44,7 @@ public interface INotesService {
 
 	List<Labels> getAlllabels(String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 
-List<Notes>getallCollabrators(String token) throws IllegalArgumentException, UnsupportedEncodingException;
+	List<User> getcollablist(String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 
 
 

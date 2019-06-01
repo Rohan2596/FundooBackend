@@ -127,8 +127,8 @@ public List<Labels> allNotelabel(@RequestHeader String token,@RequestParam long 
 	return allnoteslabel;
 }
 @GetMapping("/getallcollablist")
-public List<Notes> allcollab(@RequestHeader String token) throws UserException, UnsupportedEncodingException{
-	List<Notes> allnoteslabel=notesService.getallCollabrators(token);
+public List<User> allcollab(@RequestHeader String token,@RequestParam long noteid) throws UserException, UnsupportedEncodingException{
+	List<User> allnoteslabel=notesService.getcollablist(token, noteid);
 	
 	return allnoteslabel;}
 

@@ -196,6 +196,7 @@ LabelRespository labelRespository;
 		if (notes.isArchieve()==false) {
 			System.out.println("notes unarchive");
 			notes.setArchieve(true);
+			
 			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.save(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -203,6 +204,7 @@ LabelRespository labelRespository;
 		}else if(notes.isArchieve()==true) {
 			System.out.println("notes unarchive");
 			notes.setArchieve(false);
+			
 			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.save(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -408,21 +410,28 @@ public List<Labels> getAlllabels(String token, long noteid) throws IllegalArgume
 	
 	}
 @Override
-public List<Notes> getallCollabrators(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+public List<User> getcollablist(String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException 
+{
 	long userid=tokengenerators.decodeToken(token);
 	Optional<User> user = userRespository.findById(userid);
 	if(user.isPresent()) 
 	{
+	Optional<Notes> note = notesRespository.findById(noteid);
+	if(note.isPresent()) 
+	{
+	List<User> collablist = note.get().getCollabId();
 	
-		List<Notes> collablist = user.get().getCollabnotes();
-		 
-		return collablist;
+	return collablist;
+	}else {
+		throw new UserException("note is not present");
+	}
 	
-		}
-		else {
-			throw new UserException("user is not present");
-		}
-}
+	}
+	else {
+		throw new UserException("user is not present");
+	}
+	
+	}
 
 
 @Override
@@ -463,22 +472,8 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 		if(note.isPresent()) 
 		{
 		
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-	        
-
-	        try {
-
-	            Date date1 = formatter.parse(date);
-	            System.out.println(date1);
-	            System.out.println(formatter.format(date1));
-	            String Date=formatter.format(date1);
-	            notes.setReminder(Date);
-	        	notesRespository.save(notes);
-	        } catch (ParseException e) {
-	            e.printStackTrace();
-	        }
-	       
-			
+			notes.setReminder(date);
+			notesRespository.save(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -488,6 +483,7 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 		}else {
 			throw new UserException("User is not present");
 		}
+
 }
 
 
