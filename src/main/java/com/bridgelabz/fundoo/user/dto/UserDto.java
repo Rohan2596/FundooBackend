@@ -19,8 +19,9 @@ private String emailId;
 @NotEmpty(message = "Enter password ...!")
 @Length(min = 8, max = 32, message = "length :6 to 32 characters")
 private String password;
+
 @NotEmpty(message = "Enter mobile number")
-@Pattern(regexp = "[7-9] {1}[0-9]{9}", message = "Enter 10-digit mobile number") // ^[7-9][0-9]{9}$
+//@Pattern(regexp = "[7-9] {1}[0-9]{9}", message = "Enter 10-digit mobile number") // ^[7-9][0-9]{9}$
 private String phNumber;
 
 public UserDto(String name, String emailId, String password, String phNumber) {

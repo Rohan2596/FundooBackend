@@ -46,6 +46,8 @@ public interface INotesService {
 
 	List<User> getcollablist(String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 
+//	List<Notes> getAllreminder(String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
+
 
 
 
