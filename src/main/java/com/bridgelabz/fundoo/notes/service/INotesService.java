@@ -29,6 +29,7 @@ public interface INotesService {
 			throws IllegalArgumentException, UnsupportedEncodingException;
 
 	Response reminder(String token,long noteid,String date) throws IllegalArgumentException, UnsupportedEncodingException;
+	Response deletereminder(String token,long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 	
 	Response addNotetolabel(long labelid, String token, long noteid) throws UserException, UnsupportedEncodingException;
 
@@ -48,7 +49,7 @@ public interface INotesService {
 
 //	List<Notes> getAllreminder(String token, long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 
-
-
+List<Notes>  getReminder(String token) throws IllegalArgumentException, UnsupportedEncodingException;
+//List<Notes> getReminderofNote(String token,long noteid) throws IllegalArgumentException, UnsupportedEncodingException;
 
 }

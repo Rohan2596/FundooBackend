@@ -1,5 +1,9 @@
 package com.bridgelabz.fundoo.user.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = Emailid.class)
 public class Emailid {
 private String To;
 private String From;

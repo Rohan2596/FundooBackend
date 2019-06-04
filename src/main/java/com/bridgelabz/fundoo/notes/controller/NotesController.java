@@ -46,7 +46,12 @@ public List<Notes> readsingleNote(@RequestHeader String token) throws UserExcept
 	List<Notes> listnotes=notesService.read(token);
 	
 	return listnotes;
-} 
+}
+@GetMapping("/getReminder")
+public List<Notes> getReminder(@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
+	List<Notes> listnotes=notesService.getReminder(token);
+	return listnotes;
+}
 
 @PutMapping("/updatenotes")
 public ResponseEntity<Response> updateNote(@RequestBody NotesDto notesDto,@RequestHeader String token,@RequestParam long id) throws UserException, UnsupportedEncodingException{
@@ -150,6 +155,13 @@ public ResponseEntity<Response> removecollaboratortonote(@RequestParam long note
 public ResponseEntity<Response>reminder(@RequestHeader String token,@RequestParam long noteid,@RequestParam String date) throws IllegalArgumentException, UnsupportedEncodingException{
 	System.out.println("setting the color of notes ");
 	Response response=notesService.reminder(token, noteid, date);
+	return new ResponseEntity<>(response,HttpStatus.OK);
+	
+}
+@PutMapping("notes/deletereminder")
+public ResponseEntity<Response>reminder(@RequestHeader String token,@RequestParam long noteid) throws IllegalArgumentException, UnsupportedEncodingException{
+	System.out.println("deleting reminder notes ");
+	Response response=notesService.deletereminder(token, noteid);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 	
 }

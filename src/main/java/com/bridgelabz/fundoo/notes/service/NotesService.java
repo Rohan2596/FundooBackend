@@ -471,9 +471,12 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 		Optional<Notes> note=notesRespository.findById(noteid);
 		if(note.isPresent()) 
 		{
-		
+	
+	     
+			
 			notes.setReminder(date);
 			notesRespository.save(notes);
+		 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -485,6 +488,54 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 		}
 
 }
+
+@Override
+public List<Notes> getReminder(String token) throws IllegalArgumentException, UnsupportedEncodingException {
+	long userid=tokengenerators.decodeToken(token);
+	List<Notes> notes1 = (List<Notes>)notesRespository.findByUserId(userid);
+	List<Notes> listnotes=new ArrayList<>();
+	for(Notes usernotes:notes1) {
+		Notes notes=modelMapper.map(usernotes, Notes.class);
+		System.out.println("notes all fbsvsvbsvn sub ");
+	if( notes.getReminder()!=null) {
+		listnotes.add(notes);
+		System.out.println(listnotes);
+	}
+	}
+	return listnotes;
+}
+
+@Override
+public Response deletereminder(String token, long noteid)
+		throws IllegalArgumentException, UnsupportedEncodingException {
+	Response response=null;
+	long userid=tokengenerators.decodeToken(token);
+Optional<User> user=userRespository.findById(userid);
+Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
+	if(user.isPresent()) {
+		Optional<Notes> note=notesRespository.findById(noteid);
+		if(note.isPresent()) 
+		{
+		
+	     
+			
+			notes.setReminder(null);
+			notesRespository.save(notes);
+		 
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
+					Integer.parseInt(environment.getProperty("status.success.notes.code")));
+		return response;
+		}else {
+			throw new UserException("note is not present");
+		}
+		}else {
+			throw new UserException("User is not present");
+		}
+
+	
+}
+
+
 
 
 
