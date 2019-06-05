@@ -88,6 +88,7 @@ public class UserService implements IUserService {
 				ex.printStackTrace();
 			}
 			mailService.send(emailid);
+			
 
 			if (status == null) {
 				System.out.println("Data not Found");

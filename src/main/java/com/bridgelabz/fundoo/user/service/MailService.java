@@ -36,7 +36,7 @@ public MailService(JavaMailSender javaMailSender) {
 @Autowired
 private TokenGenerators tokenGenerators;
 
-//@RabbitListener(queues="${fundoo.rabbitmq.queue}")
+
 public void send(Emailid emailid) {
 	System.out.println("Sending mail to receiver");
 	SimpleMailMessage message=new  SimpleMailMessage();
@@ -44,14 +44,20 @@ public void send(Emailid emailid) {
 	message.setTo(emailid.getTo());
 	message.setSubject(emailid.getSubject());
 	message.setText(emailid.getBody());
-	rabbitTemplate.convertAndSend(exchange, routingkey,message);
-//	javaMailSender.send(message);
+	rabbitTemplate.convertAndSend(exchange, routingkey,emailid);
+	javaMailSender.send(message);
 	
 	System.out.println("email sent successfully");
 }
 public String getlink(String link,long id) {
 	return link+tokenGenerators.generateToken(id);
 }
-
+//@RabbitListener(queues="${fundoo.rabbitmq.queue}")
+//public void receive(Emailid emailid) {
+//send(emailid);
+////	System.out.println(Emailid emailid);
+//	
+//	
+//}
 
 }
