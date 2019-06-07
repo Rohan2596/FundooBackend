@@ -23,5 +23,10 @@ public NotesDto() {
 public String toString() {
 	return "NotesDto [title=" + title + ", description=" + description + "]";
 }
+public NotesDto(String title, String description) {
+	super();
+	this.title = title;
+	this.description = description;
+}
 
 }
