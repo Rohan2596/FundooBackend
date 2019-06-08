@@ -25,7 +25,7 @@ import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.response.Response;
 import com.bridgelabz.fundoo.response.ResponseToken;
 import com.bridgelabz.fundoo.user.dto.LoginDto;
-import com.bridgelabz.fundoo.user.dto.UserDto;
+import com.bridgelabz.fundoo.user.dto.UserDTO;
 import com.bridgelabz.fundoo.user.model.Emailid;
 import com.bridgelabz.fundoo.user.model.ForgotPassword;
 import com.bridgelabz.fundoo.user.model.User;
@@ -35,7 +35,7 @@ import com.bridgelabz.fundoo.util.TokenGenerators;
 
 @PropertySource("classpath:message.properties")
 @Service
-public class UserService implements IUserService {
+public class UserServiceImpl implements IUserService {
 	@Autowired
 	ModelMapper modelmapper;
 
@@ -52,15 +52,16 @@ public class UserService implements IUserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	 Path path = Paths.get("/home/admin1/Desktop/icons");
-	
-	
+	Path path = Paths.get("/home/admin1/Desktop/icons");
+
 	@Override
-	public Response registeruser(UserDto userDto, StringBuffer requestUrl) {
+	public Response registeruser(UserDTO userDto, StringBuffer requestUrl) {
 		System.out.println(requestUrl);
 		Emailid emailid = new Emailid();
 		Response response = null;
+
 		Optional<User> availability = userRespository.findByEmailId(userDto.getEmailId());
+
 		if (availability.isPresent()) {
 			throw new UserException("User is present");
 //			System.out.println("user is present");
@@ -70,29 +71,24 @@ public class UserService implements IUserService {
 
 //			user.setName(userDto.getName());
 //			user.setEmailId(userDto.getEmailId());
-			String password = passwordEncoder.encode(userDto.getPassword());
 
-			user.setPassword(password);
+			user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 //			user.setPhNumber(userDto.getPhNumber());
-			user.setRegisteredDate(LocalDateTime.now());
 			user.setVerified(false);
-			User status = userRespository.save(user);
+			user = userRespository.save(user);
 
 			System.out.println(user.getId());
 			emailid.setFrom("rohankadam572@gmail.com");
 			emailid.setTo(userDto.getEmailId());
 			emailid.setSubject("Email verification");
 			try {
-				emailid.setBody(mailService.getlink("http://192.168.0.215:8080/user/emailvalidation/", status.getId()));
+				emailid.setBody(mailService.getlink("http://192.168.0.215:8080/user/emailvalidation/", user.getId()));
 			} catch (IllegalArgumentException ex) {
 				ex.printStackTrace();
 			}
-			mailService.send(emailid);
-			
+			mailService.rabitsend(emailid);
 
-			if (status == null) {
-				System.out.println("Data not Found");
-			}
+			
 		}
 		response = ResponseStatus.statusinfo(environment.getProperty("status.register.success"),
 				Integer.parseInt(environment.getProperty("status.success.code")));
@@ -101,7 +97,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public ResponseToken loginuser(LoginDto loginDto) {
+	public ResponseToken loginUser(LoginDto loginDto) {
 
 		ResponseToken response = null;
 		User user = modelmapper.map(loginDto, User.class);
@@ -109,7 +105,7 @@ public class UserService implements IUserService {
 		System.out.println(loginDto.getEmailId());
 		if (availability.isPresent()) {
 			boolean status = passwordEncoder.matches(loginDto.getPassword(), availability.get().getPassword());
-			if (status == true && availability.get().isVerified()==true) {
+			if (status == true && availability.get().isVerified() == true) {
 				String tokengenerate = tokengenerators.generateToken(availability.get().getId());
 				System.out.println(tokengenerate);
 				response = ResponseStatus.tokenStatusInfo(environment.getProperty("status.login.success"),
@@ -135,7 +131,6 @@ public class UserService implements IUserService {
 		Optional<User> user = userRespository.findById((long) id).map(this::verify);
 
 		if (user.isPresent()) {
-			
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.register.success"),
 					Integer.parseInt(environment.getProperty("status.success.code")));
@@ -159,7 +154,7 @@ public class UserService implements IUserService {
 		Emailid email = new Emailid();
 
 		System.out.println(loginDto.getEmailId());
-		
+
 		Optional<User> user = userRespository.findByEmailId(loginDto.getEmailId());
 		System.out.println(user.toString());
 
@@ -190,7 +185,8 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response resetpassword(String token,ForgotPassword forgotPassword) throws UserException, UnsupportedEncodingException {
+	public Response resetpassword(String token, ForgotPassword forgotPassword)
+			throws UserException, UnsupportedEncodingException {
 		Response response = null;
 		long id = tokengenerators.decodeToken(token);
 		System.out.println(id);
@@ -198,26 +194,25 @@ public class UserService implements IUserService {
 		Optional<User> user = userRespository.findById((long) id);
 
 		if (user.isPresent()) {
-		    String password=passwordEncoder.encode(forgotPassword.getConfirmPassword());
+			String password = passwordEncoder.encode(forgotPassword.getConfirmPassword());
 			user.get().setPassword(password);
 			System.out.println("forgotPassword.getConfirmPassword()");
-			
+
 			System.out.println(user.get().getPassword());
-		    user.get().setModifiedDate(LocalDateTime.now());
-		    System.out.println("UserService.resetpassword()::Date set");
-		    userRespository.save(user.get());
+			user.get().setModifiedDate(LocalDateTime.now());
+			System.out.println("UserServiceImpl.resetpassword()::Date set");
+			userRespository.save(user.get());
 //			if(forgotPassword.getConfirmPassword()==forgotPassword.getNewPassword()) {
 //			user1.setPassword(forgotPassword.getNewPassword());
 //			userRespository.save(user1);
-//			System.out.println("UserService.resetpassword()::Object saved");
+//			System.out.println("UserServiceImpl.resetpassword()::Object saved");
 //			System.out.println(user1.getPassword()+"  "+forgotPassword.getConfirmPassword());
 //			response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
 //					Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));}
 //			else {
-				response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
-						Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));
-				
-			
+			response = ResponseStatus.statusinfo(environment.getProperty("status.success.resetpassword"),
+					Integer.parseInt(environment.getProperty("status.success.resetpassword.code")));
+
 		} else {
 			System.out.println("User not present");
 			response = ResponseStatus.statusinfo(environment.getProperty("status.failure.resetpassword"),
@@ -261,50 +256,49 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public Response uploadImage(String token, MultipartFile file) throws IllegalArgumentException, UnsupportedEncodingException {
-	   Response response=null;
-	   long userid=tokengenerators.decodeToken(token);
-	   Optional<User> user=userRespository.findById(userid);
-	   if(user.isPresent()) {
-		   System.out.println("user is present");
-		   UUID uuid=UUID.randomUUID();
-		   String uniqueId=uuid.toString();
-		   try{
-			   Files.copy(file.getInputStream(), path.resolve(uniqueId), StandardCopyOption.REPLACE_EXISTING);
-		   }catch(IOException e) {
-			   e.printStackTrace();
-		   }
-		   user.get().setProfilePic(uniqueId);
-		   userRespository.save(user.get());
-		   response = ResponseStatus.statusinfo(environment.getProperty("status.login.success"),
+	public Response uploadImage(String token, MultipartFile file)
+			throws IllegalArgumentException, UnsupportedEncodingException {
+		Response response = null;
+		long userid = tokengenerators.decodeToken(token);
+		Optional<User> user = userRespository.findById(userid);
+		if (user.isPresent()) {
+			System.out.println("user is present");
+			UUID uuid = UUID.randomUUID();
+			String uniqueId = uuid.toString();
+			try {
+				Files.copy(file.getInputStream(), path.resolve(uniqueId), StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			user.get().setProfilePic(uniqueId);
+			userRespository.save(user.get());
+			response = ResponseStatus.statusinfo(environment.getProperty("status.login.success"),
 					Integer.parseInt(environment.getProperty("status.success.code")));
 			return response;
-	   }else {
-		    throw new UserException("user is not present",-20); 
-	   }
-	   
+		} else {
+			throw new UserException("user is not present", -20);
+		}
+
 	}
 
 	@Override
 	public Resource getImage(String token) throws IllegalArgumentException, UnsupportedEncodingException {
 
-long userid=tokengenerators.decodeToken(token);
-Optional<User> user=userRespository.findById(userid);
-if(user.isPresent()) {
-	System.out.println("user is present");
-	Path imagepath=path.resolve(user.get().getProfilePic());
-	try {
-		Resource resources= new UrlResource(imagepath.toUri());
-		if(resources.exists()||resources.isReadable()) {
-			return resources;
+		long userid = tokengenerators.decodeToken(token);
+		Optional<User> user = userRespository.findById(userid);
+		if (user.isPresent()) {
+			System.out.println("user is present");
+			Path imagepath = path.resolve(user.get().getProfilePic());
+			try {
+				Resource resources = new UrlResource(imagepath.toUri());
+				if (resources.exists() || resources.isReadable()) {
+					return resources;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-	}catch(IOException e) {
-		e.printStackTrace();
-	}
-}
 		return null;
 	}
-	
-	
 
 }

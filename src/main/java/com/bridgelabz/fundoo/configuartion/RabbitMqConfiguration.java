@@ -1,11 +1,10 @@
 package com.bridgelabz.fundoo.configuartion;
-import org.springframework.amqp.core.AmqpTemplate;
+
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,10 +43,5 @@ public class RabbitMqConfiguration {
 		return new Jackson2JsonMessageConverter();
 	}
 
-	@Bean
-	public AmqpTemplate rabbitTemplate1(ConnectionFactory connectionFactory) {
-		final RabbitTemplate rabbitTemplate1 = new RabbitTemplate(connectionFactory);
-		rabbitTemplate1.setMessageConverter(jsonMessageConverter());
-		return rabbitTemplate1;
-	}
+
 }

@@ -24,6 +24,8 @@ import com.bridgelabz.fundoo.notes.respository.NotesRespository;
 import com.bridgelabz.fundoo.response.Response;
 import com.bridgelabz.fundoo.user.model.User;
 import com.bridgelabz.fundoo.user.respository.UserRespository;
+import com.bridgelabz.fundoo.util.NoteContainer;
+import com.bridgelabz.fundoo.util.NoteOperation;
 import com.bridgelabz.fundoo.util.ResponseStatus;
 import com.bridgelabz.fundoo.util.TokenGenerators;
 
@@ -41,6 +43,11 @@ public class NotesService implements INotesService {
 	TokenGenerators tokengenerators;
 @Autowired
 UserRespository userRespository;
+
+  @Autowired
+  NoteContainer noteContainer;
+
+
 
 @Autowired
 LabelRespository labelRespository;
@@ -67,6 +74,8 @@ LabelRespository labelRespository;
 			
 			notesRespository.save(notes);
 			userRespository.save(user.get());
+			noteContainer.setNotes(notes);
+			noteContainer.setNoteOperation(NoteOperation.CREATE);
 			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;

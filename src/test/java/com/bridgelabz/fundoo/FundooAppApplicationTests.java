@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.bridgelabz.fundoo.user.dto.LoginDto;
-import com.bridgelabz.fundoo.user.dto.UserDto;
+import com.bridgelabz.fundoo.user.dto.UserDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
@@ -33,13 +33,12 @@ public class FundooAppApplicationTests {
 	
 	
 	@InjectMocks
-	private UserDto userDto;
+	private UserDTO userDto;
 	
 	@Before
 	public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-
-}
+    }
 	public static String asJsonString(final Object obj) {
 	    try {
 	        return new ObjectMapper().writeValueAsString(obj);
@@ -58,7 +57,7 @@ public void regsiter() throws Exception {
 mockMvc.perform( MockMvcRequestBuilders
   .post("/user/registration")
 //  .content(asJsonString(userDto))
-  .content(asJsonString(new UserDto("rohan kadam","rohankadam@gmail.com","Rohan@2589","8280946115")))
+  .content(asJsonString(new UserDTO("rohan kadam","rohankadam@gmail.com","Rohan@2589","8280946115")))
   .contentType(MediaType.APPLICATION_JSON)
   .accept(MediaType.APPLICATION_JSON))
 	  .andDo(print())

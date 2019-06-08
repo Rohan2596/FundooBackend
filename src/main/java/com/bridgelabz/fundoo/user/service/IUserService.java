@@ -11,12 +11,12 @@ import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.response.Response;
 import com.bridgelabz.fundoo.response.ResponseToken;
 import com.bridgelabz.fundoo.user.dto.LoginDto;
-import com.bridgelabz.fundoo.user.dto.UserDto;
+import com.bridgelabz.fundoo.user.dto.UserDTO;
 import com.bridgelabz.fundoo.user.model.ForgotPassword;
 @Service
 public interface IUserService {
-Response registeruser(UserDto userDto, StringBuffer requestUrl);
-ResponseToken loginuser(LoginDto loginDto);
+Response registeruser(UserDTO userDto, StringBuffer requestUrl);
+ResponseToken loginUser(LoginDto loginDto);
 Response validateEmail(String token) throws UserException, UnsupportedEncodingException;
 Response forgotpassword(LoginDto loginDto);
 Response resetpassword(String token,ForgotPassword forgotPassword) throws UserException, UnsupportedEncodingException;

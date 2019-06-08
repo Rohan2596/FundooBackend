@@ -51,8 +51,8 @@ public class User {
 	private String password;
 
 	private boolean isVerified = false;
-	private LocalDateTime registeredDate;
-	private LocalDateTime modifiedDate;
+	private LocalDateTime registeredDate = LocalDateTime.now();
+	private LocalDateTime modifiedDate = LocalDateTime.now();
 	private String profilePic;
 	
 	
