@@ -15,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.fundoo.elasticSearch.IElasticSearch;
 import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.labels.respository.LabelRespository;
@@ -28,6 +29,8 @@ import com.bridgelabz.fundoo.util.NoteContainer;
 import com.bridgelabz.fundoo.util.NoteOperation;
 import com.bridgelabz.fundoo.util.ResponseStatus;
 import com.bridgelabz.fundoo.util.TokenGenerators;
+import com.bridgelabz.fundoo.util.rabbitMqElasticResearch;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @PropertySource("classpath:message.properties")
 @Service("notesService")
@@ -46,7 +49,12 @@ UserRespository userRespository;
 
   @Autowired
   NoteContainer noteContainer;
-
+  
+  @Autowired
+  IElasticSearch elastic;
+ 
+  @Autowired
+ rabbitMqElasticResearch elasticRabbit;
 
 
 @Autowired
@@ -55,27 +63,33 @@ LabelRespository labelRespository;
 	public Response create(NotesDto notesDto, String token)
 			throws UserException, UnsupportedEncodingException {
 		long token1 = tokengenerators.decodeToken(token);
-
-//		Optional<Notes> isNotesPresent = notesRespository.findBytitle(notesDto.getTitle());
+		Notes note1 =new Notes();
 		if (notesDto.getTitle().isEmpty() && notesDto.getDescription().isEmpty()) {
 				throw new UserException("Notes are empty",-5);
 		}else {
 			Notes notes = modelMapper.map(notesDto, Notes.class);
 			Optional<User> user=userRespository.findById(token1);
-		
-			notes.setUserid(token1);
-//			notes.setTitle(notesDto.getTitle());
-//			notes.setDescription(notesDto.getDescription());
-			notes.setCreatedDate(LocalDateTime.now());
+		    notes.setUserid(token1);
+            notes.setCreatedDate(LocalDateTime.now());
 			notes.setArchieve(false);
 			notes.setPin(false);
 			notes.setTrash(false);
 			user.get().getNotes().add(notes); 
-			
-			notesRespository.save(notes);
+//			Notes note=null;
+//			note =notesRespository.save(notes);
+//notesRespository.save(notes);
+//elastic.create(notes);
+
+//elasticRabbit.rabitsendelastic(notes);
+
+
+
+	elasticRabbit.rabitsendelastic(note1);
+
+
+notesRespository.save(note1);
 			userRespository.save(user.get());
-			noteContainer.setNotes(notes);
-			noteContainer.setNoteOperation(NoteOperation.CREATE);
+
 			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -102,6 +116,7 @@ LabelRespository labelRespository;
 	public Response update(NotesDto notesDto, String token, long id)
 			throws UserException, UnsupportedEncodingException {
 		Response response = null;
+		Notes note1=new Notes();	
 		if (notesDto.getTitle().isEmpty() && notesDto.getDescription().isEmpty()) {
 			throw new UserException("Notes are empty",-5);
 		}
@@ -110,8 +125,16 @@ LabelRespository labelRespository;
 		Notes notes = notesRespository.findByNoteidAndUserId(id, Userid);
 		notes.setTitle(notesDto.getTitle());
 		notes.setDescription(notesDto.getDescription());
-		notes.setModifiedDate(LocalDateTime.now());
-       notesRespository.save(notes);
+		 note1	= modelMapper.map(notes, Notes.class);
+		 LocalDateTime cr = note1.getCreatedDate();
+		 note1.setCreatedDate(null);
+		 note1.setModifiedDate(null);
+		System.out.println(note1);
+			elasticRabbit.rabitsendelastic(note1);
+			 note1.setCreatedDate(cr);
+			 note1.setModifiedDate(LocalDateTime.now());
+		
+		notesRespository.save(note1);
 		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 				Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -122,12 +145,13 @@ LabelRespository labelRespository;
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
-		if (notes.isTrash() == true) {
+	
+		if (notes.isTrash() == false) {
 			System.out.println("delete notes and putting into trash");
 //			notes.setTrash(true);
 //			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.delete(notes);
-
+			 notesRespository.delete(notes);
+//			elasticRabbit.rabitsendelastic(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -143,19 +167,38 @@ LabelRespository labelRespository;
 		Response response = null;
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
+		Notes note1=new Notes();
 
 		if (notes.isTrash()==false) {
 			System.out.println("notes trash");
 			notes.setTrash(true);
-			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.save(notes);
+			 note1	= modelMapper.map(notes, Notes.class);
+			 LocalDateTime cr = note1.getCreatedDate();
+			 note1.setCreatedDate(null);
+			 note1.setModifiedDate(null);
+			System.out.println(note1);
+				elasticRabbit.rabitsendelastic(note1);
+				 note1.setCreatedDate(cr);
+				 note1.setModifiedDate(LocalDateTime.now());
+			
+			notesRespository.save(note1);
+//			elasticRabbit.rabitsendelastic(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		}else if(notes.isTrash()==true) {
 			System.out.println("notes trash");
 			notes.setTrash(false);
-			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.save(notes);
+			 note1	= modelMapper.map(notes, Notes.class);
+			 LocalDateTime cr = note1.getCreatedDate();
+			 note1.setCreatedDate(null);
+			 note1.setModifiedDate(null);
+			System.out.println(note1);
+				elasticRabbit.rabitsendelastic(note1);
+				 note1.setCreatedDate(cr);
+				 note1.setModifiedDate(LocalDateTime.now());
+			
+			notesRespository.save(note1);
+//			elasticRabbit.rabitsendelastic(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		}
@@ -170,6 +213,7 @@ LabelRespository labelRespository;
 	@Override
 	public Response pin(String token, int id) throws UserException, UnsupportedEncodingException {
 		Response response = null;
+		Notes note1 =new Notes();
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid); 
 
@@ -178,13 +222,24 @@ LabelRespository labelRespository;
 			notes.setPin(true);
 			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.save(notes);
+//			elasticRabbit.rabitsendelastic(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		}else if(notes.isPin()==true) {
 			System.out.println("notes unpinned");
 			notes.setPin(false);
-			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.save(notes);
+			 note1	= modelMapper.map(notes, Notes.class);
+			 LocalDateTime cr = note1.getCreatedDate();
+			 note1.setCreatedDate(null);
+			 note1.setModifiedDate(null);
+			System.out.println(note1);
+				elasticRabbit.rabitsendelastic(note1);
+				 note1.setCreatedDate(cr);
+				 note1.setModifiedDate(LocalDateTime.now());
+			
+			notesRespository.save(note1);
+
+//			elasticRabbit.rabitsendelastic(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 			
@@ -199,23 +254,40 @@ LabelRespository labelRespository;
 	@Override
 	public Response archieve(String token, int id) throws UserException, UnsupportedEncodingException {
 		Response response = null;
+		Notes note1=new Notes();
 		long userid = tokengenerators.decodeToken(token);
 		Notes notes = notesRespository.findByNoteidAndUserId(id, userid);
 
 		if (notes.isArchieve()==false) {
 			System.out.println("notes unarchive");
 			notes.setArchieve(true);
+			notes.setPin(false);
+			 note1	= modelMapper.map(notes, Notes.class);
+			 LocalDateTime cr = note1.getCreatedDate();
+			 note1.setCreatedDate(null);
+			 note1.setModifiedDate(null);
+			    System.out.println(note1);
+				elasticRabbit.rabitsendelastic(note1);
+				 note1.setCreatedDate(cr);
+				 note1.setModifiedDate(LocalDateTime.now());
 			
-			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.save(notes);
+			notesRespository.save(note1);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		}else if(notes.isArchieve()==true) {
 			System.out.println("notes unarchive");
 			notes.setArchieve(false);
+			 note1	= modelMapper.map(notes, Notes.class);
+			 LocalDateTime cr = note1.getCreatedDate();
+			 note1.setCreatedDate(null);
+			 note1.setModifiedDate(null);
+			System.out.println(note1);
+				elasticRabbit.rabitsendelastic(note1);
+				 note1.setCreatedDate(cr);
+				 note1.setModifiedDate(LocalDateTime.now());
 			
-			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.save(notes);
+			notesRespository.save(note1);
+
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -362,7 +434,7 @@ public List<Notes> archivenotes(String token) throws UserException, UnsupportedE
 	for(Notes usernotes:notes1) {
 		Notes notes=modelMapper.map(usernotes, Notes.class);
 		System.out.println("notes all fbsvsvbsvn sub ");
-	if( notes.isArchieve()==true && notes.isTrash()==true) {
+	if( notes.isArchieve()==true && notes.isTrash()==false) {
 		listnotes.add(notes);
 		System.out.println(listnotes);
 	}
@@ -447,6 +519,7 @@ public List<User> getcollablist(String token, long noteid) throws IllegalArgumen
 @Override
 public Response color(String token, long  noteid,String color) throws IllegalArgumentException, UnsupportedEncodingException {
 	Response response=null;
+	Notes note1=new Notes();
 	long userid=tokengenerators.decodeToken(token);
 Optional<User> user=userRespository.findById(userid);
 Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
@@ -456,7 +529,18 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 		{
 		
 			notes.setColor(color);
-			notesRespository.save(notes);
+			//System.out.println(note1);
+		 note1	= modelMapper.map(notes, Notes.class);
+		 LocalDateTime cr = note1.getCreatedDate();
+		 note1.setCreatedDate(null);
+		 note1.setModifiedDate(null);
+		System.out.println(note1);
+			elasticRabbit.rabitsendelastic(note1);
+			 note1.setCreatedDate(cr);
+			 note1.setModifiedDate(LocalDateTime.now());
+//			elastic.updateNote(notes);
+			notesRespository.save(note1);
+			
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -474,6 +558,7 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 @Override
 public Response reminder(String token, long noteid, String date) throws IllegalArgumentException, UnsupportedEncodingException {
 	Response response=null;
+	Notes note1 =new Notes();
 	long userid=tokengenerators.decodeToken(token);
 Optional<User> user=userRespository.findById(userid);
 Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
@@ -481,12 +566,19 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 		Optional<Notes> note=notesRespository.findById(noteid);
 		if(note.isPresent()) 
 		{
-	
-	     
-			
 			notes.setReminder(date);
-			notesRespository.save(notes);
-		 
+			
+			 note1	= modelMapper.map(notes, Notes.class);
+			 LocalDateTime cr = note1.getCreatedDate();
+			 note1.setCreatedDate(null);
+			 note1.setModifiedDate(null);
+			System.out.println(note1);
+				elasticRabbit.rabitsendelastic(note1);
+				 note1.setCreatedDate(cr);
+				 note1.setModifiedDate(LocalDateTime.now());
+			
+			notesRespository.save(note1);
+
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -519,6 +611,7 @@ public List<Notes> getReminder(String token) throws IllegalArgumentException, Un
 public Response deletereminder(String token, long noteid)
 		throws IllegalArgumentException, UnsupportedEncodingException {
 	Response response=null;
+	Notes note1=new Notes();
 	long userid=tokengenerators.decodeToken(token);
 Optional<User> user=userRespository.findById(userid);
 Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
@@ -526,12 +619,18 @@ Notes notes = notesRespository.findByNoteidAndUserId(noteid, userid);
 		Optional<Notes> note=notesRespository.findById(noteid);
 		if(note.isPresent()) 
 		{
+		notes.setReminder(null);
+		 note1	= modelMapper.map(notes, Notes.class);
+		 LocalDateTime cr = note1.getCreatedDate();
+		 note1.setCreatedDate(null);
+		 note1.setModifiedDate(null);
+		System.out.println(note1);
+			elasticRabbit.rabitsendelastic(note1);
+			 note1.setCreatedDate(cr);
+			 note1.setModifiedDate(LocalDateTime.now());
 		
-	     
-			
-			notes.setReminder(null);
-			notesRespository.save(notes);
-		 
+			notesRespository.save(note1);
+		
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;

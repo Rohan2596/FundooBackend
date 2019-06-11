@@ -25,7 +25,7 @@ import com.bridgelabz.fundoo.response.Response;
 
 @RestController
 @CrossOrigin(allowedHeaders="*",origins="*")
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class LabelController {
 @Autowired
 LabelService labelService;

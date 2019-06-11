@@ -42,26 +42,24 @@ import com.bridgelabz.fundoo.user.service.UserServiceImpl;
 public class UserController {
 
 	@Autowired
-	private UserServiceImpl userService;
+	 UserServiceImpl userService;
 	
-	private final static Logger logger = LoggerFactory.getLogger(UserController.class.getName());
+//	private final static Logger logger = LoggerFactory.getLogger(UserController.class.getName());
 
-	@PostMapping
+	@PostMapping("/registration")
 	public ResponseEntity<Response> register(@RequestBody @Valid UserDTO userdto,
 			HttpServletRequest httpServletRequest, BindingResult result) {
 		
-		logger.info("Request payload : {} ", userdto);
+//		logger.info("Request payload : {} ", userdto);
 		StringBuffer requestUrl = httpServletRequest.getRequestURL();
 		Response response = userService.registeruser(userdto, requestUrl);
-		logger.info("Response payload : {} ", response);
+//		logger.info("Response payload : {} ", response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseToken> loginuser(@RequestBody @Valid LoginDto loginDto) {
-		// System.out.println("login");
-		// System.out.println("login dto "+loginDto.toString());
-		ResponseToken response = userService.loginUser(loginDto);
+	   ResponseToken response = userService.loginUser(loginDto);
 		System.out.println(response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}

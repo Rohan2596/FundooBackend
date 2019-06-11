@@ -30,7 +30,7 @@ import com.bridgelabz.fundoo.user.model.User;
 
 @RestController
 @CrossOrigin(allowedHeaders="*",origins="*")
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class NotesController {
 @Autowired
 NotesService  notesService;

@@ -2,6 +2,7 @@ package com.bridgelabz.fundoo.user.service;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListeners;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import org.springframework.stereotype.Component;
 
+import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.user.model.Emailid;
 import com.bridgelabz.fundoo.util.TokenGenerators;
 
@@ -52,13 +54,13 @@ public class MailService {
 		return link + tokenGenerators.generateToken(id);
 	}
 //@RabbitListener(queues="${fundoo.rabbitmq.queue}")
-//public void receive(Emailid emailid) {
-//send(emailid);
-////	System.out.println(Emailid emailid);
+//public void receive(Notes notes) {
+//send(notes);
+//	System.out.println(Emailid emailid);
 //	
 //	
 //}
-
+ 
 	public void rabitsend(Emailid emailid) {
 		rabbitTemplate.convertAndSend(exchange, routingkey, emailid);
 	}

@@ -22,6 +22,16 @@ public class RabbitMqConfiguration {
 
 	@Value("${fundoo.rabbitmq.routingkey}")
 	private String routingkey;
+	
+	@Value("${elastic.rabbitmq.queue}")
+	String queueName1;
+
+
+	@Value("${elastic.rabbitmq.routingkey}")
+	private String routingkey1;
+	
+	
+	
 
 	@Bean
 	Queue queue() {
@@ -43,5 +53,13 @@ public class RabbitMqConfiguration {
 		return new Jackson2JsonMessageConverter();
 	}
 
-
+	@Bean
+	Queue queue1() {
+		return new Queue(queueName1, false);
+	}
+	
+	@Bean
+	Binding binding1(Queue queue1, DirectExchange exchange) {
+		return BindingBuilder.bind(queue1).to(exchange).with(routingkey1);
+	}
 }

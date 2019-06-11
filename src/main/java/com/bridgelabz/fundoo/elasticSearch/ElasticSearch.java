@@ -2,19 +2,22 @@ package com.bridgelabz.fundoo.elasticSearch;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
+
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo.notes.model.Notes;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+@Service
 public class ElasticSearch implements IElasticSearch {
-	   private final String INDEX = "noteindex";
-	    private final String TYPE = "notetype";  
+	    String INDEX = "notedb";
+	    String TYPE = "notetype";  
 
 	    @Autowired
 	    private RestHighLevelClient client;
@@ -23,30 +26,40 @@ public class ElasticSearch implements IElasticSearch {
 	    private ObjectMapper objectMapper;
 	    
 	@Override
-	public Notes create(Notes notes) {
+	public Notes create(Notes notes) throws IOException  {
 	       @SuppressWarnings("unchecked")
 	        Map<String, Object> dataMap = objectMapper.convertValue(notes, Map.class);
 	        IndexRequest indexRequest = new IndexRequest(INDEX,TYPE,String.valueOf(notes.getId())).source(dataMap);
-	        try {
+	   
 	            client.index(indexRequest, RequestOptions.DEFAULT);
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-
+	   
 	        return notes;
 		
 	}
 
 	@Override
-	public Notes updateNote(Notes notes) {
-		// TODO Auto-generated method stub
-		return null;
+	public Notes updateNote(Notes notes) throws IOException {
+		   @SuppressWarnings("unchecked")
+	        Map<String, Object> dataMap = objectMapper.convertValue(notes, Map.class);
+	        UpdateRequest updateRequest = new UpdateRequest(INDEX,TYPE,String.valueOf(notes.getId()));
+	      
+	        	updateRequest.doc(dataMap);
+	            client.update(updateRequest, RequestOptions.DEFAULT);
+	      
+
+	        return notes;
 	}
 
 	@Override
 	public void deleteNote(Long NoteId) {
-		// TODO Auto-generated method stub
-		
+	  DeleteRequest deleteRequest=new DeleteRequest(INDEX,TYPE,String.valueOf(NoteId));   
+		try {
+	            client.delete(deleteRequest, RequestOptions.DEFAULT);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+
+	        return;
 	}
 
 	@Override

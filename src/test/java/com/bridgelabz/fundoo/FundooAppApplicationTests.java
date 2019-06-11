@@ -39,6 +39,7 @@ public class FundooAppApplicationTests {
 	public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
+	
 	public static String asJsonString(final Object obj) {
 	    try {
 	        return new ObjectMapper().writeValueAsString(obj);

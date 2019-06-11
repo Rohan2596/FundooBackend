@@ -159,6 +159,30 @@ public class Notes {
 		NLabels = nLabels;
 	}
 
+	
+	public Notes() {
+		
+	}
+
+	public Notes(long noteid, long userId, String title, String description, LocalDateTime modifiedDate,
+			LocalDateTime createdDate, boolean isPin, boolean isTrash, boolean isArchieve, String color,
+			String reminder, List<Labels> nLabels, List<User> collabId) {
+		
+		this.noteid = noteid;
+		this.userId = userId;
+		this.title = title;
+		this.description = description;
+		this.modifiedDate = modifiedDate;
+		this.createdDate = createdDate;
+		this.isPin = isPin;
+		this.isTrash = isTrash;
+		this.isArchieve = isArchieve;
+		this.color = color;
+		this.reminder = reminder;
+		this.NLabels = nLabels;
+		this.collabId = collabId;
+	}
+
 	@Override
 	public String toString() {
 		return "Notes [noteid=" + noteid + ", userId=" + userId + ", title=" + title + ", description=" + description
