@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo.notes.model.Notes;
 
-@Service
+
 public interface IElasticSearch {
 	public Notes create(Notes notes) throws IOException;
 

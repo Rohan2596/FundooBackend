@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.bridgelabz.fundoo.elasticSearch.ElasticSearch;
 import com.bridgelabz.fundoo.elasticSearch.IElasticSearch;
 import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.notes.respository.NotesRespository;
@@ -20,8 +21,8 @@ public class rabbitMqElasticResearch {
 	@Autowired
 	private AmqpTemplate rabbitTemplate;
 
-	@Value("${fundoo.rabbitmq.exchange}")
-	private String exchange;
+	@Value("${elastic.rabbitmq.exchange}")
+	private String exchange1;
 
 	@Value("${elastic.rabbitmq.routingkey}")
 	private String routingkey1;
@@ -30,12 +31,12 @@ public class rabbitMqElasticResearch {
 	NotesRespository noteRespository;
 	
 	  @Autowired
-	  IElasticSearch elastic;
+	  ElasticSearch elastic;
  
 	
 		public void rabitsendelastic(Notes notes) {
 		System.out.println(notes);
-			rabbitTemplate.convertAndSend(exchange, routingkey1, notes);
+			rabbitTemplate.convertAndSend(exchange1, routingkey1, notes);
 			System.out.println("send the messgae ");
 			
 		}
@@ -43,18 +44,18 @@ public class rabbitMqElasticResearch {
 		@RabbitListener(queues = "fundooelastic.queue1")
 		public void send(Notes notes) throws IOException {
 			System.out.println("elastic");
-			System.out.println(notes);
-//              Notes  note=null;   			
-//			if (notes.equals(note)) {
-//			elastic.create(notes);
-//			System.out.println("elastic serach ");
-//		}else if(noteRespository.findById(notes.getId()).isPresent() && notes.isTrash()==true) {
-//			elastic.deleteNote(notes.getId());
-//			System.out.println("elastic serach ");}
-//		else {
+ 		System.out.println(notes);
+              			
+			if (!noteRespository.findById(notes.getId()).isPresent()) {
+			elastic.create(notes);
+			System.out.println("elastic serach ");
+		}else if(noteRespository.findById(notes.getId()).isPresent() && notes.isTrash()==true) {
+			elastic.deleteNote(notes.getId());
+			System.out.println("elastic serach ");}
+		else {
 				elastic.updateNote(notes);
 			System.out.println("elastic serach ");
-//		}
+		}
 
 		}
 		

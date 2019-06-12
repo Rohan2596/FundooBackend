@@ -7,6 +7,7 @@ import java.util.Map;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,28 +24,39 @@ public class ElasticSearch implements IElasticSearch {
 	    private RestHighLevelClient client;
 
 	    @Autowired
-	    private ObjectMapper objectMapper;
+   private ObjectMapper objectMapper;
 	    
 	@Override
-	public Notes create(Notes notes) throws IOException  {
+	public Notes create(Notes notes)   {
 	       @SuppressWarnings("unchecked")
 	        Map<String, Object> dataMap = objectMapper.convertValue(notes, Map.class);
 	        IndexRequest indexRequest = new IndexRequest(INDEX,TYPE,String.valueOf(notes.getId())).source(dataMap);
 	   
-	            client.index(indexRequest, RequestOptions.DEFAULT);
+	            try {
+					client.index(indexRequest, RequestOptions.DEFAULT);
+				} catch (IOException e) {
+		
+					e.printStackTrace();
+				}
 	   
 	        return notes;
 		
 	}
 
 	@Override
-	public Notes updateNote(Notes notes) throws IOException {
+	public Notes updateNote(Notes notes) {
 		   @SuppressWarnings("unchecked")
 	        Map<String, Object> dataMap = objectMapper.convertValue(notes, Map.class);
 	        UpdateRequest updateRequest = new UpdateRequest(INDEX,TYPE,String.valueOf(notes.getId()));
 	      
 	        	updateRequest.doc(dataMap);
-	            client.update(updateRequest, RequestOptions.DEFAULT);
+	        	 try {
+	        		 @SuppressWarnings("unchecked")
+					UpdateResponse updateResponse =    client.update(updateRequest, RequestOptions.DEFAULT);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	      
 
 	        return notes;
@@ -64,7 +76,7 @@ public class ElasticSearch implements IElasticSearch {
 
 	@Override
 	public List<Notes> searchData(String query, long userId) {
-		// TODO Auto-generated method stub
+	
 		return null;
 	}
 

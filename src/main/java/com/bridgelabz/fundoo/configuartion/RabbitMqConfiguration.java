@@ -42,6 +42,10 @@ public class RabbitMqConfiguration {
 	DirectExchange exchange() {
 		return new DirectExchange(exchange);
 	}
+	@Bean
+	DirectExchange exchange1() {
+		return new DirectExchange(exchange);
+	}
 
 	@Bean
 	Binding binding(Queue queue, DirectExchange exchange) {
@@ -59,7 +63,7 @@ public class RabbitMqConfiguration {
 	}
 	
 	@Bean
-	Binding binding1(Queue queue1, DirectExchange exchange) {
-		return BindingBuilder.bind(queue1).to(exchange).with(routingkey1);
+	Binding binding1(Queue queue1, DirectExchange exchange1) {
+		return BindingBuilder.bind(queue1).to(exchange1).with(routingkey1);
 	}
 }
