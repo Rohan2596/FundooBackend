@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoo.elasticSearch;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public interface IElasticSearch {
 
 	public void deleteNote(Long NoteId);
 
-	public List<Notes> searchData(String query, long userId);
+	public List<Notes> searchData();
+	
+	public List<Notes> searchall(String query, String token) throws IllegalArgumentException, UnsupportedEncodingException;
 
 }

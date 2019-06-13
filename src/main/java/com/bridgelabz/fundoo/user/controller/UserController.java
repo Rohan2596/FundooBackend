@@ -33,7 +33,8 @@ import com.bridgelabz.fundoo.user.model.ForgotPassword;
 import com.bridgelabz.fundoo.user.service.UserServiceImpl;
 
 /**
- * @author admin1
+ * Purpose: Controller for User
+ * @author Rohan kadam
  *
  */
 @RestController
@@ -44,67 +45,76 @@ public class UserController {
 	@Autowired
 	 UserServiceImpl userService;
 	
-//	private final static Logger logger = LoggerFactory.getLogger(UserController.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(UserController.class.getName());
 
 	@PostMapping("/registration")
 	public ResponseEntity<Response> register(@RequestBody @Valid UserDTO userdto,
 			HttpServletRequest httpServletRequest, BindingResult result) {
-		
-//		logger.info("Request payload : {} ", userdto);
+				logger.info("Request payload : {} ", userdto);
 		StringBuffer requestUrl = httpServletRequest.getRequestURL();
 		Response response = userService.registeruser(userdto, requestUrl);
-//		logger.info("Response payload : {} ", response);
+		logger.info("Response payload : {} ", response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseToken> loginuser(@RequestBody @Valid LoginDto loginDto) {
 	   ResponseToken response = userService.loginUser(loginDto);
-		System.out.println(response);
+	   logger.info("Request payload:{} ",loginDto);
+			logger.info("Response payload",response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/emailvalidation/{token}")
 	public ResponseEntity<Response> validateUser(@PathVariable String token)
 			throws UserException, UnsupportedEncodingException {
+		logger.info("Request payload:{}",token);
 		Response response = userService.validateEmail(token);
-		System.out.println(response);
+	
+		logger.info("Response Payload:{}",response);
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
 
 	@PostMapping("/forgotPassword")
 	public ResponseEntity<Response> forgot(@RequestBody @Valid LoginDto loginDto) {
-		System.out.println(loginDto.getEmailId());
-		System.out.println("inside forgot");
+		logger.info("Request Payload:{}",loginDto);
 		Response response = userService.forgotpassword(loginDto);
+		logger.info("Response Payload:{}",response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PutMapping("/resetPassword/{token}")
 	public ResponseEntity<Response> resetpassword(@PathVariable String token,
 			@RequestBody ForgotPassword forgotPassword) throws UserException, UnsupportedEncodingException {
+		logger.info("Request Payload:{}",token);
 		Response response = userService.resetpassword(token, forgotPassword);
-		System.out.println("Inside reset");
+		logger.info("Response Payload:{}",response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/changePassword")
 	public ResponseEntity<Response> changepassword(@RequestBody @Valid LoginDto loginDto) {
+		logger.info("Response Payload:{}",loginDto);
 		Response response = userService.changePassword(loginDto);
+		logger.info("Response Payload:{}",response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/uploadImage")
 	public ResponseEntity<Response> uploadImage(@RequestHeader String token, @RequestParam MultipartFile file)
 			throws IllegalArgumentException, UnsupportedEncodingException {
+		logger.info("Response Payload:{}",token);
 		Response response = userService.uploadImage(token, file);
+		logger.info("Response Payload:{}",response);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/getProfilePic/{token}")
 	public ResponseEntity<Resource> getImage(@PathVariable String token)
 			throws IllegalArgumentException, UnsupportedEncodingException {
+		logger.info("Response Payload:{}",token);
 		Resource response = userService.getImage(token);
+		logger.info("Response Payload:{}",response);
 		return new ResponseEntity<Resource>(response, HttpStatus.OK);
 	}
 }

@@ -82,7 +82,7 @@ public class UserServiceImpl implements IUserService {
 			emailid.setTo(userDto.getEmailId());
 			emailid.setSubject("Email verification");
 			try {
-				emailid.setBody(mailService.getlink("http://192.168.0.215:8080/user/emailvalidation/", user.getId()));
+				emailid.setBody(mailService.getlink("http://localhost:8080/users/emailvalidation/", user.getId()));
 			} catch (IllegalArgumentException ex) {
 				ex.printStackTrace();
 			}

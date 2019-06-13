@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgelabz.fundoo.elasticSearch.ElasticSearch;
 import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.notes.dto.NotesDto;
@@ -34,6 +35,8 @@ import com.bridgelabz.fundoo.user.model.User;
 public class NotesController {
 @Autowired
 NotesService  notesService;
+@Autowired
+ElasticSearch elasticSearch;
 
 @PostMapping("/createNotes")
 	public ResponseEntity<Response> createNote(@RequestBody NotesDto notesDto,@RequestHeader String token) throws UserException, UnsupportedEncodingException{
@@ -44,6 +47,12 @@ NotesService  notesService;
 @GetMapping("/getnotes")
 public List<Notes> readsingleNote(@RequestHeader String token) throws UserException, UnsupportedEncodingException{
 	List<Notes> listnotes=notesService.read(token);
+	
+	return listnotes;
+}
+@GetMapping("/getcollabNotes")
+public List<Notes> collabNote(@RequestHeader String token) throws UserException, UnsupportedEncodingException{
+	List<Notes> listnotes=notesService.getCollabNotes(token);
 	
 	return listnotes;
 }
@@ -164,6 +173,16 @@ public ResponseEntity<Response>reminder(@RequestHeader String token,@RequestPara
 	Response response=notesService.deletereminder(token, noteid);
 	return new ResponseEntity<>(response,HttpStatus.OK);
 	
+}
+
+@GetMapping("elasticSearch/getallNotes")
+public List<Notes> findAll() throws Exception{
+	return elasticSearch.searchData();
+}
+
+@GetMapping("elasticSearch/getnotesbytitle")
+public List<Notes>findByTitle(@RequestParam String query,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
+	return  elasticSearch.searchall(query, token);
 }
 
 }

@@ -11,9 +11,19 @@ import com.bridgelabz.fundoo.response.Response;
 
 
 
+/**
+ * @author Rohan Kadam
+ *Purpose: To provide Configuration class along with  Bean
+ */
 @Configuration
 //@EnableSwagger2
 public class ApplicationConfig {
+	
+	
+	/**
+	 * Purpose:Model Mapper Bean 
+	 * @return modelmapper
+	 */
 	@Bean
 	ModelMapper getModelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
@@ -21,24 +31,21 @@ public class ApplicationConfig {
 		return modelMapper;
 	}
 
+	/**
+	 * Purpose:   Custom Response
+	 * @return Response
+	 */
 	@Bean
 	public Response getResponse() {
 		return new Response();
 	}
-//
-//	@Bean
-//
-//	public Docket productApi() {
-//
-//		return new Docket(DocumentationType.SWAGGER_2)
-//
-//				.select().apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoo"))
-//
-////            .paths(regex("/product.*"))
-//
-//				.build();
-//
-//	}
+	
+	
+
+	/**
+	 * Purpose: Password Encoding Bean
+	 * @return BCryptPasswordEncoder
+	 */
 	@Bean
 	public PasswordEncoder getpasswordEncoder() {
 		return new BCryptPasswordEncoder();
