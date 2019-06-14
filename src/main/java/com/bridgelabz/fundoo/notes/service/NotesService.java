@@ -208,7 +208,7 @@ public class NotesService implements INotesService {
 			System.out.println("notes pinned");
 			notes.setPin(true);
 			notes.setModifiedDate(LocalDateTime.now());
-			notesRespository.save(notes);
+			note1 = notesRespository.save(notes);
 //			elasticRabbit.rabitsendelastic(notes);
 			try {
 				elastic.updateNote(note1);
@@ -222,16 +222,8 @@ public class NotesService implements INotesService {
 		} else if (notes.isPin() == true) {
 			System.out.println("notes unpinned");
 			notes.setPin(false);
-			note1 = modelMapper.map(notes, Notes.class);
-			LocalDateTime cr = note1.getCreatedDate();
-			note1.setCreatedDate(null);
-			note1.setModifiedDate(null);
-			System.out.println(note1);
-			elasticRabbit.rabitsendelastic(note1);
-			note1.setCreatedDate(cr);
-			note1.setModifiedDate(LocalDateTime.now());
-
-			notesRespository.save(note1);
+			notes.setModifiedDate(LocalDateTime.now());
+			note1 = notesRespository.save(notes);
 
 //			elasticRabbit.rabitsendelastic(notes);
 			try {
@@ -299,6 +291,7 @@ public class NotesService implements INotesService {
 	public Response addCollabtoNote(long noteid, String token, String collabemailid)
 			throws IllegalArgumentException, UnsupportedEncodingException {
 		Response response = null;
+		Notes note1=new Notes();
 		long userid = tokengenerators.decodeToken(token);
 		Optional<User> user = userRespository.findById(userid);
 		if (user.isPresent()) {
@@ -310,8 +303,14 @@ public class NotesService implements INotesService {
 					notes.setModifiedDate(LocalDateTime.now());
 					notes.getCollabId().add(collabid);
 					collabid.getCollabnotes().add(notes);
-					notesRespository.save(notes);
+				note1=notesRespository.save(notes);
 					userRespository.save(collabid);
+					try {
+						elastic.updateNote(note1);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 							Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				} else {
@@ -506,17 +505,17 @@ public class NotesService implements INotesService {
 		}
 
 	}
+
 	@Override
 	public List<Notes> getCollabNotes(String token) throws IllegalArgumentException, UnsupportedEncodingException {
-		long userid=tokengenerators.decodeToken(token);
-		Optional<User> userdb=userRespository.findById(userid);
-		if(userdb.isPresent()) {
+		long userid = tokengenerators.decodeToken(token);
+		Optional<User> userdb = userRespository.findById(userid);
+		if (userdb.isPresent()) {
 			List<Notes> listNotes = userdb.get().getCollabnotes();
 			return listNotes;
 		}
 		return null;
 	}
-	
 
 	@Override
 	public List<User> getcollablist(String token, long noteid)
@@ -584,17 +583,13 @@ public class NotesService implements INotesService {
 			Optional<Notes> note = notesRespository.findById(noteid);
 			if (note.isPresent()) {
 				notes.setReminder(date);
-
-				note1 = modelMapper.map(notes, Notes.class);
-				LocalDateTime cr = note1.getCreatedDate();
-				note1.setCreatedDate(null);
-				note1.setModifiedDate(null);
-				System.out.println(note1);
-				elasticRabbit.rabitsendelastic(note1);
-				note1.setCreatedDate(cr);
-				note1.setModifiedDate(LocalDateTime.now());
-
-				notesRespository.save(note1);
+       note1=    notesRespository.save(note1);
+          try {
+			elastic.updateNote(note1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -656,7 +651,5 @@ public class NotesService implements INotesService {
 		}
 
 	}
-
-
 
 }

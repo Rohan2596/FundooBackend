@@ -21,6 +21,7 @@ import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.dto.LabelsDto;
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.labels.service.LabelService;
+import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.response.Response;
 
 @RestController
@@ -80,9 +81,10 @@ public List<Labels> getlabels(@RequestHeader String token) throws IllegalArgumen
 	List<Labels> listlabels=labelService.allLabels(token);
 	return listlabels;
 }
-//@GetMapping("/getlabelsOfNotes")
-//public List<Labels> getlabelsofNote(@RequestParam long noteid,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
-//	List<Labels> listlabels=labelService.allLabelsInNote(noteid, token);
-//	return listlabels;
-//}
+@GetMapping("/getlabelsOfNotes")
+public List<Notes> getlabelsofNote(@RequestParam long labelid,@RequestHeader String token) throws IllegalArgumentException, UnsupportedEncodingException{
+	List<Notes> listnotes=labelService.alllabelNotes(labelid, token);
+	return listnotes;
+}
+
 }
