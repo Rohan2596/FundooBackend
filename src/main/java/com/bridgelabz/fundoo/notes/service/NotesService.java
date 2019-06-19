@@ -73,13 +73,13 @@ public class NotesService implements INotesService {
 			user.get().getNotes().add(notes);
 
 			note1 = notesRespository.save(notes);
-			elasticRabbit.rabitsendelastic(note1);
-			try {
-				elastic.create(note1);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//elasticRabbit.rabitsendelastic(note1);
+//			try {
+//				elastic.create(note1);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			userRespository.save(user.get());
 
 			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -120,12 +120,12 @@ public class NotesService implements INotesService {
 		notes.setDescription(notesDto.getDescription());
 
 		note1 = notesRespository.save(notes);
-		try {
-			elasticRabbit.send(note1);
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
+//		try {
+//			elasticRabbit.send(note1);
+//		} catch (IOException e) {
+//
+//			e.printStackTrace();
+//		}
 		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 				Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -143,7 +143,7 @@ public class NotesService implements INotesService {
 //			notes.setTrash(true);
 //			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.delete(notes);
-			elasticRabbit.rabitsendelastic(notes);
+//			elasticRabbit.rabitsendelastic(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -166,13 +166,13 @@ public class NotesService implements INotesService {
 			notes.setTrash(true);
 
 			note1 = notesRespository.save(notes);
-			elasticRabbit.rabitsendelastic(note1);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			elasticRabbit.rabitsendelastic(note1);
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else if (notes.isTrash() == true) {
@@ -180,13 +180,13 @@ public class NotesService implements INotesService {
 			notes.setTrash(false);
 
 			note1 = notesRespository.save(notes);
-			elasticRabbit.rabitsendelastic(note1);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			elasticRabbit.rabitsendelastic(note1);
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -210,12 +210,12 @@ public class NotesService implements INotesService {
 			notes.setModifiedDate(LocalDateTime.now());
 			note1 = notesRespository.save(notes);
 //			elasticRabbit.rabitsendelastic(notes);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -226,12 +226,12 @@ public class NotesService implements INotesService {
 			note1 = notesRespository.save(notes);
 
 //			elasticRabbit.rabitsendelastic(notes);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -257,12 +257,12 @@ public class NotesService implements INotesService {
 			notes.setPin(false);
 
 			note1 = notesRespository.save(note1);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -270,12 +270,12 @@ public class NotesService implements INotesService {
 			System.out.println("notes unarchive");
 			notes.setArchieve(false);
 			note1 = notesRespository.save(note1);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -305,12 +305,12 @@ public class NotesService implements INotesService {
 					collabid.getCollabnotes().add(notes);
 				note1=notesRespository.save(notes);
 					userRespository.save(collabid);
-					try {
-						elastic.updateNote(note1);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						elastic.updateNote(note1);
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 							Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				} else {
@@ -344,12 +344,12 @@ public class NotesService implements INotesService {
 					notes.getCollabId().remove(collabid);
 					collabid.getCollabnotes().remove(notes);
 					note1 = notesRespository.save(notes);
-					try {
-						elastic.updateNote(note1);
-					} catch (IOException e) {
-
-						e.printStackTrace();
-					}
+//					try {
+//						elastic.updateNote(note1);
+//					} catch (IOException e) {
+//
+//						e.printStackTrace();
+//					}
 
 					userRespository.save(collabid);
 					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -383,12 +383,12 @@ public class NotesService implements INotesService {
 			labels.getLNotes().add(notes);
 			labelRespository.save(labels);
 			note1 = notesRespository.save(notes);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -414,12 +414,12 @@ public class NotesService implements INotesService {
 			labels.getLNotes().remove(notes);
 			labelRespository.save(labels);
 			note1 = notesRespository.save(notes);
-			try {
-				elastic.updateNote(note1);
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
+//			try {
+//				elastic.updateNote(note1);
+//			} catch (IOException e) {
+//
+//				e.printStackTrace();
+//			}
 
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -552,12 +552,12 @@ public class NotesService implements INotesService {
 
 				notes.setColor(color);
 				note1 = notesRespository.save(notes);
-				try {
-					elastic.updateNote(note1);
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				}
+//				try {
+//					elastic.updateNote(note1);
+//				} catch (IOException e) {
+//
+//					e.printStackTrace();
+//				}
 
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -584,12 +584,12 @@ public class NotesService implements INotesService {
 			if (note.isPresent()) {
 				notes.setReminder(date);
        note1=    notesRespository.save(note1);
-          try {
-			elastic.updateNote(note1);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//          try {
+//			elastic.updateNote(note1);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -633,12 +633,12 @@ public class NotesService implements INotesService {
 				notes.setReminder(null);
 
 				note1 = notesRespository.save(note1);
-				try {
-					elastic.updateNote(note1);
-				} catch (IOException e) {
-
-					e.printStackTrace();
-				}
+//				try {
+//					elastic.updateNote(note1);
+//				} catch (IOException e) {
+//
+//					e.printStackTrace();
+//				}
 
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
