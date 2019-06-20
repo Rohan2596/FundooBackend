@@ -29,7 +29,7 @@ import com.bridgelabz.fundoo.user.respository.UserRespository;
 
 import com.bridgelabz.fundoo.util.ResponseStatus;
 import com.bridgelabz.fundoo.util.TokenGenerators;
-import com.bridgelabz.fundoo.util.rabbitMqElasticResearch;
+//import com.bridgelabz.fundoo.util.rabbitMqElasticResearch;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @PropertySource("classpath:message.properties")
@@ -50,8 +50,8 @@ public class NotesService implements INotesService {
 	@Autowired
 	IElasticSearch elastic;
 
-	@Autowired
-	rabbitMqElasticResearch elasticRabbit;
+//	@Autowired
+//	rabbitMqElasticResearch elasticRabbit;
 
 	@Autowired
 	LabelRespository labelRespository;
@@ -143,7 +143,7 @@ public class NotesService implements INotesService {
 //			notes.setTrash(true);
 //			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.delete(notes);
-//			elasticRabbit.rabitsendelastic(notes);
+//		elasticRabbit.rabitsendelastic(notes);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
