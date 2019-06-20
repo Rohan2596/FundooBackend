@@ -1,16 +1,11 @@
 package com.bridgelabz.fundoo.user.service;
 
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.annotation.RabbitListeners;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import org.springframework.stereotype.Component;
 
-import com.bridgelabz.fundoo.notes.model.Notes;
 import com.bridgelabz.fundoo.user.model.Emailid;
 import com.bridgelabz.fundoo.util.TokenGenerators;
 
@@ -19,14 +14,14 @@ public class MailService {
 
 	private JavaMailSender javaMailSender;
 
-	@Autowired
-	private AmqpTemplate rabbitTemplate;
-
-	@Value("${fundoo.rabbitmq.exchange}")
-	private String exchange;
-
-	@Value("${fundoo.rabbitmq.routingkey}")
-	private String routingkey;
+//	@Autowired
+//	private AmqpTemplate rabbitTemplate;
+//
+//	@Value("${fundoo.rabbitmq.exchange}")
+//	private String exchange;
+//
+//	@Value("${fundoo.rabbitmq.routingkey}")
+//	private String routingkey;
 
 	@Autowired
 	public MailService(JavaMailSender javaMailSender) {
@@ -36,7 +31,7 @@ public class MailService {
 	@Autowired
 	private TokenGenerators tokenGenerators;
 
-	@RabbitListener(queues = "${fundoo.rabbitmq.queue}")
+//	@RabbitListener(queues = "${fundoo.rabbitmq.queue}")
 	public void send(Emailid emailid) {
 		System.out.println("Sending mail to receiver");
 		SimpleMailMessage message = new SimpleMailMessage();
@@ -61,8 +56,8 @@ public class MailService {
 //	
 //}
  
-	public void rabitsend(Emailid emailid) {
-		rabbitTemplate.convertAndSend(exchange, routingkey, emailid);
-	}
+//	public void rabitsend(Emailid emailid) {
+//		rabbitTemplate.convertAndSend(exchange, routingkey, emailid);
+//	}
 
 }

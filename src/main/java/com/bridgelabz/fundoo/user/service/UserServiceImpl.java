@@ -86,7 +86,7 @@ public class UserServiceImpl implements IUserService {
 			} catch (IllegalArgumentException ex) {
 				ex.printStackTrace();
 			}
-			mailService.rabitsend(emailid);
+			//mailService.rabitsend(emailid);
 
 			
 		}
