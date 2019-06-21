@@ -17,6 +17,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo.elasticSearch.IElasticSearch;
+import com.bridgelabz.fundoo.elasticSearch.NoteContainer;
+import com.bridgelabz.fundoo.elasticSearch.NoteOperation;
 import com.bridgelabz.fundoo.exception.UserException;
 import com.bridgelabz.fundoo.labels.model.Labels;
 import com.bridgelabz.fundoo.labels.respository.LabelRespository;
@@ -29,6 +31,7 @@ import com.bridgelabz.fundoo.user.respository.UserRespository;
 
 import com.bridgelabz.fundoo.util.ResponseStatus;
 import com.bridgelabz.fundoo.util.TokenGenerators;
+import com.bridgelabz.fundoo.util.rabbitMqElasticResearch;
 //import com.bridgelabz.fundoo.util.rabbitMqElasticResearch;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -49,9 +52,13 @@ public class NotesService implements INotesService {
 
 	@Autowired
 	IElasticSearch elastic;
+	
+	
+	@Autowired
+	private NoteContainer noteContainer;
 
-//	@Autowired
-//	rabbitMqElasticResearch elasticRabbit;
+	@Autowired
+	rabbitMqElasticResearch elasticRabbit;
 
 	@Autowired
 	LabelRespository labelRespository;
@@ -80,6 +87,10 @@ public class NotesService implements INotesService {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.CREATE);
+//			elasticRabbit.rabitsendelastic(noteContainer);
+			elasticRabbit.operation(noteContainer);
 			userRespository.save(user.get());
 
 			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -126,6 +137,9 @@ public class NotesService implements INotesService {
 //
 //			e.printStackTrace();
 //		}
+		noteContainer.setNotes(note1);
+		noteContainer.setNoteoperation(NoteOperation.UPDATE);
+		elasticRabbit.operation(noteContainer);
 		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 				Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -144,6 +158,9 @@ public class NotesService implements INotesService {
 //			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.delete(notes);
 //		elasticRabbit.rabitsendelastic(notes);
+			noteContainer.setNotes(notes);
+			noteContainer.setNoteoperation(NoteOperation.DELETE);
+			elasticRabbit.operation(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -173,6 +190,9 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.operation(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else if (notes.isTrash() == true) {
@@ -187,6 +207,9 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.operation(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -216,7 +239,9 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
-
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.operation(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else if (notes.isPin() == true) {
@@ -232,7 +257,8 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
-
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 
@@ -263,7 +289,9 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
-
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.operation(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else if (notes.isArchieve() == true) {
@@ -276,7 +304,8 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
-
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -311,6 +340,8 @@ public class NotesService implements INotesService {
 //						// TODO Auto-generated catch block
 //						e.printStackTrace();
 //					}
+					noteContainer.setNotes(note1);
+					noteContainer.setNoteoperation(NoteOperation.UPDATE);
 					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 							Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				} else {
@@ -351,6 +382,8 @@ public class NotesService implements INotesService {
 //						e.printStackTrace();
 //					}
 
+					noteContainer.setNotes(note1);
+					noteContainer.setNoteoperation(NoteOperation.UPDATE);
 					userRespository.save(collabid);
 					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 							Integer.parseInt(environment.getProperty("status.success.notes.code")));
@@ -389,7 +422,8 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
-
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 
@@ -420,7 +454,8 @@ public class NotesService implements INotesService {
 //
 //				e.printStackTrace();
 //			}
-
+			noteContainer.setNotes(note1);
+			noteContainer.setNoteoperation(NoteOperation.UPDATE);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		}
@@ -558,7 +593,8 @@ public class NotesService implements INotesService {
 //
 //					e.printStackTrace();
 //				}
-
+				noteContainer.setNotes(note1);
+				noteContainer.setNoteoperation(NoteOperation.UPDATE);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				return response;
@@ -590,7 +626,8 @@ public class NotesService implements INotesService {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-
+       noteContainer.setNotes(note1);
+		noteContainer.setNoteoperation(NoteOperation.UPDATE);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				return response;
@@ -640,6 +677,8 @@ public class NotesService implements INotesService {
 //					e.printStackTrace();
 //				}
 
+				noteContainer.setNotes(note1);
+				noteContainer.setNoteoperation(NoteOperation.UPDATE);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				return response;
