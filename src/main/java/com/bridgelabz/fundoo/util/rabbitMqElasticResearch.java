@@ -41,7 +41,7 @@ public class rabbitMqElasticResearch {
 	
 		public void rabitsendelastic(NoteContainer noteContainer) {
 		System.out.println(noteContainer.getNotes());
-			rabbitTemplate.convertAndSend(exchange1, routingkey1, noteContainer.getNotes());
+			rabbitTemplate.convertAndSend(exchange1, routingkey1, noteContainer);
 			System.out.println("send the messgae ");
 			
 		}
@@ -65,7 +65,7 @@ public class rabbitMqElasticResearch {
 //		}
 		
 		@RabbitListener(queues="fundooelastic.queue1")
-		public void operation(NoteContainer noteContainer) {
+		public void operation(NoteContainer noteContainer) throws IOException {
 			Notes notes=noteContainer.getNotes();
 			switch(noteContainer.getNoteoperation()) {
 			case CREATE:

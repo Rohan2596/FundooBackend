@@ -25,6 +25,9 @@ public class RabbitMqConfiguration {
 	@Value("${fundoo.rabbitmq.exchange}")
 	String exchange;
 
+	
+	
+	
 	@Value("${fundoo.rabbitmq.routingkey}")
 	private String routingkey;
 	
@@ -35,7 +38,8 @@ public class RabbitMqConfiguration {
 	@Value("${elastic.rabbitmq.routingkey}")
 	private String routingkey1;
 	
-	
+	@Value("${elastic.rabbitmq.exchange}")
+	String exchange1;
 	
 
 	/**
@@ -62,7 +66,7 @@ public class RabbitMqConfiguration {
 	 */
 	@Bean
 	DirectExchange exchange1() {
-		return new DirectExchange(exchange);
+		return new DirectExchange(exchange1);
 	}
 
 	
@@ -92,7 +96,7 @@ public class RabbitMqConfiguration {
 	 */
 	@Bean
 	Queue queue1() {
-		return new Queue(queueName1, false);
+		return new Queue(queueName1, false );
 	}
 	
 	/**

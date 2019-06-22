@@ -80,6 +80,7 @@ public class NotesService implements INotesService {
 			user.get().getNotes().add(notes);
 
 			note1 = notesRespository.save(notes);
+			note1.setCreatedDate(null);
 //elasticRabbit.rabitsendelastic(note1);
 //			try {
 //				elastic.create(note1);
@@ -90,7 +91,8 @@ public class NotesService implements INotesService {
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.CREATE);
 //			elasticRabbit.rabitsendelastic(noteContainer);
-			elasticRabbit.operation(noteContainer);
+//			elasticRabbit.operation(noteContainer);
+			elasticRabbit.rabitsendelastic(noteContainer);
 			userRespository.save(user.get());
 
 			Response response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
@@ -139,7 +141,8 @@ public class NotesService implements INotesService {
 //		}
 		noteContainer.setNotes(note1);
 		noteContainer.setNoteoperation(NoteOperation.UPDATE);
-		elasticRabbit.operation(noteContainer);
+		//			elasticRabbit.operation(noteContainer);
+		elasticRabbit.rabitsendelastic(noteContainer);
 		response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 				Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		return response;
@@ -155,12 +158,15 @@ public class NotesService implements INotesService {
 		if (notes.isTrash() == true) {
 			System.out.println("delete notes and putting into trash");
 //			notes.setTrash(true);
+
+	
 //			notes.setModifiedDate(LocalDateTime.now());
 			notesRespository.delete(notes);
 //		elasticRabbit.rabitsendelastic(notes);
 			noteContainer.setNotes(notes);
 			noteContainer.setNoteoperation(NoteOperation.DELETE);
-			elasticRabbit.operation(noteContainer);
+
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -181,18 +187,12 @@ public class NotesService implements INotesService {
 		if (notes.isTrash() == false) {
 			System.out.println("notes trash");
 			notes.setTrash(true);
-
+			note1.setCreatedDate(null);
 			note1 = notesRespository.save(notes);
-//			elasticRabbit.rabitsendelastic(note1);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
-			elasticRabbit.operation(noteContainer);
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else if (notes.isTrash() == true) {
@@ -200,16 +200,11 @@ public class NotesService implements INotesService {
 			notes.setTrash(false);
 
 			note1 = notesRespository.save(notes);
-//			elasticRabbit.rabitsendelastic(note1);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+note1.setCreatedDate(null);
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
-			elasticRabbit.operation(noteContainer);
+
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -232,16 +227,12 @@ public class NotesService implements INotesService {
 			notes.setPin(true);
 			notes.setModifiedDate(LocalDateTime.now());
 			note1 = notesRespository.save(notes);
-//			elasticRabbit.rabitsendelastic(notes);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+           
+			
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
-			elasticRabbit.operation(noteContainer);
+
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else if (notes.isPin() == true) {
@@ -250,15 +241,10 @@ public class NotesService implements INotesService {
 			notes.setModifiedDate(LocalDateTime.now());
 			note1 = notesRespository.save(notes);
 
-//			elasticRabbit.rabitsendelastic(notes);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+note1.setCreatedDate(null);
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 
@@ -283,29 +269,21 @@ public class NotesService implements INotesService {
 			notes.setPin(false);
 
 			note1 = notesRespository.save(note1);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
-			elasticRabbit.operation(noteContainer);
+
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else if (notes.isArchieve() == true) {
 			System.out.println("notes unarchive");
 			notes.setArchieve(false);
 			note1 = notesRespository.save(note1);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		} else {
@@ -334,14 +312,10 @@ public class NotesService implements INotesService {
 					collabid.getCollabnotes().add(notes);
 				note1=notesRespository.save(notes);
 					userRespository.save(collabid);
-//					try {
-//						elastic.updateNote(note1);
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+
 					noteContainer.setNotes(note1);
 					noteContainer.setNoteoperation(NoteOperation.UPDATE);
+					elasticRabbit.rabitsendelastic(noteContainer);
 					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 							Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				} else {
@@ -375,16 +349,11 @@ public class NotesService implements INotesService {
 					notes.getCollabId().remove(collabid);
 					collabid.getCollabnotes().remove(notes);
 					note1 = notesRespository.save(notes);
-//					try {
-//						elastic.updateNote(note1);
-//					} catch (IOException e) {
-//
-//						e.printStackTrace();
-//					}
 
 					noteContainer.setNotes(note1);
 					noteContainer.setNoteoperation(NoteOperation.UPDATE);
 					userRespository.save(collabid);
+					elasticRabbit.rabitsendelastic(noteContainer);
 					response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 							Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				} else {
@@ -416,14 +385,10 @@ public class NotesService implements INotesService {
 			labels.getLNotes().add(notes);
 			labelRespository.save(labels);
 			note1 = notesRespository.save(notes);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 
@@ -448,14 +413,10 @@ public class NotesService implements INotesService {
 			labels.getLNotes().remove(notes);
 			labelRespository.save(labels);
 			note1 = notesRespository.save(notes);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (IOException e) {
-//
-//				e.printStackTrace();
-//			}
+
 			noteContainer.setNotes(note1);
 			noteContainer.setNoteoperation(NoteOperation.UPDATE);
+			elasticRabbit.rabitsendelastic(noteContainer);
 			response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 					Integer.parseInt(environment.getProperty("status.success.notes.code")));
 		}
@@ -587,14 +548,10 @@ public class NotesService implements INotesService {
 
 				notes.setColor(color);
 				note1 = notesRespository.save(notes);
-//				try {
-//					elastic.updateNote(note1);
-//				} catch (IOException e) {
-//
-//					e.printStackTrace();
-//				}
+
 				noteContainer.setNotes(note1);
 				noteContainer.setNoteoperation(NoteOperation.UPDATE);
+				elasticRabbit.rabitsendelastic(noteContainer);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				return response;
@@ -620,14 +577,10 @@ public class NotesService implements INotesService {
 			if (note.isPresent()) {
 				notes.setReminder(date);
        note1=    notesRespository.save(note1);
-//          try {
-//			elastic.updateNote(note1);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
        noteContainer.setNotes(note1);
 		noteContainer.setNoteoperation(NoteOperation.UPDATE);
+		elasticRabbit.rabitsendelastic(noteContainer);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				return response;
@@ -670,15 +623,11 @@ public class NotesService implements INotesService {
 				notes.setReminder(null);
 
 				note1 = notesRespository.save(note1);
-//				try {
-//					elastic.updateNote(note1);
-//				} catch (IOException e) {
-//
-//					e.printStackTrace();
-//				}
+
 
 				noteContainer.setNotes(note1);
 				noteContainer.setNoteoperation(NoteOperation.UPDATE);
+				elasticRabbit.rabitsendelastic(noteContainer);
 				response = ResponseStatus.statusinfo(environment.getProperty("status.success.notes.created"),
 						Integer.parseInt(environment.getProperty("status.success.notes.code")));
 				return response;
