@@ -18,7 +18,7 @@ public class ElasticConfiguration {
      */
     @Bean
     public RestHighLevelClient client() {
-        RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")).setMaxRetryTimeoutMillis(6000));
+        RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("elasticsearch", 9200, "http")).setMaxRetryTimeoutMillis(12000));
         return client;
     }
 }
